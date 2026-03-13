@@ -21,11 +21,24 @@ export default function TalentExpertMap() {
   const [isDragging, setIsDragging] = useState(false);
   const [allCountries, setAllCountries] = useState([]); 
   
+  // Responsive State
+  const [globeScale, setGlobeScale] = useState(320);
+  
   const dragStartPos = useRef({ x: 0, y: 0 });
   const requestRef = useRef();
 
-  // 1. DYNAMIC SEARCH INDEX: Extract all country names and centroids from the GeoJSON
   useEffect(() => {
+    // Dynamic resizing logic
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 640) setGlobeScale(180); // Small Mobile
+      else if (width < 1024) setGlobeScale(250); // Tablet
+      else setGlobeScale(320); // Desktop
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Initial call
+
     fetch(geoUrl)
       .then(res => res.json())
       .then(data => {
@@ -37,7 +50,9 @@ export default function TalentExpertMap() {
           setAllCountries(countriesList);
         }
       })
-      .catch(err => console.error("Error loading map data for search:", err));
+      .catch(err => console.error("Error loading map data:", err));
+
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const data = REGION_DATA[selectedCountry] || { 
@@ -64,7 +79,6 @@ export default function TalentExpertMap() {
     });
   };
 
-  // Handle selecting from search dropdown
   const handleSelectSearch = (country) => {
     setSelectedCountry(country.name);
     setRotation([-country.centroid[0], -country.centroid[1], 0]);
@@ -73,7 +87,7 @@ export default function TalentExpertMap() {
 
   return (
     <section 
-      className="relative min-h-screen bg-[#FDFDFF] flex items-center justify-center py-20 overflow-hidden font-sans select-none touch-none outline-none"
+      className="relative min-h-screen bg-[#FDFDFF] flex items-center justify-center py-10 lg:py-20 overflow-hidden font-sans select-none touch-none outline-none"
       onMouseMove={handleMouseMove}
       onMouseDown={(e) => {
         setIsDragging(true);
@@ -88,28 +102,27 @@ export default function TalentExpertMap() {
       `}} />
       
       {/* BRAND BG MESH */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-100/30 blur-[140px] rounded-full -translate-y-1/3 translate-x-1/4 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-50/50 blur-[120px] rounded-full translate-y-1/3 -translate-x-1/4 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-full lg:w-[800px] h-[400px] lg:h-[800px] bg-blue-100/30 blur-[80px] lg:blur-[140px] rounded-full -translate-y-1/3 translate-x-1/4 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-full lg:w-[600px] h-[300px] lg:h-[600px] bg-indigo-50/50 blur-[60px] lg:blur-[120px] rounded-full translate-y-1/3 -translate-x-1/4 pointer-events-none" />
 
-      <div className="max-w-[1550px] mx-auto grid grid-cols-1 lg:grid-cols-12 items-center relative px-8 gap-8">
+      <div className="max-w-[1550px] mx-auto grid grid-cols-1 lg:grid-cols-12 items-center relative px-6 sm:px-10 gap-8 lg:gap-12">
         
         {/* DATA CARD & SEARCH */}
-        <div className="lg:col-span-5 z-40 mt-32 space-y-6">
-          <div className="relative max-w-lg group">
+        <div className="lg:col-span-5 z-40 space-y-6 order-2 lg:order-1">
+          <div className="relative w-full max-w-lg group mx-auto lg:mx-0">
             <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
             </div>
             <input
               type="text"
               placeholder="Search 240+ global markets..."
-              className="w-full bg-white border border-slate-200/60 rounded-3xl py-5 pl-14 pr-6 text-sm font-bold text-slate-900 shadow-sm outline-none focus:border-blue-600 transition-all"
+              className="w-full bg-white border border-slate-200/60 rounded-3xl py-4 lg:py-5 pl-14 pr-6 text-sm font-bold text-slate-900 shadow-sm outline-none focus:border-blue-600 transition-all"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             
-            {/* DYNAMIC SEARCH RESULTS WITH LOADING GUARD */}
             {searchQuery && (
-              <div className="absolute top-full left-0 right-0 mt-3 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-[2rem] shadow-2xl z-50 max-h-72 overflow-y-auto p-2 no-scrollbar">
+              <div className="absolute top-full left-0 right-0 mt-3 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-3xl shadow-2xl z-50 max-h-60 overflow-y-auto p-2 no-scrollbar">
                 {allCountries?.length > 0 ? (
                   allCountries
                     .filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -117,14 +130,14 @@ export default function TalentExpertMap() {
                       <button 
                         key={country.name}
                         onClick={() => handleSelectSearch(country)}
-                        className="w-full text-left px-5 py-4 rounded-2xl hover:bg-blue-600 hover:text-white text-[13px] font-black text-slate-700 transition-all flex items-center justify-between group"
+                        className="w-full text-left px-5 py-3 rounded-2xl hover:bg-blue-600 hover:text-white text-[13px] font-black text-slate-700 transition-all flex items-center justify-between"
                       >
                         {country.name}
-                        <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                        <ArrowRight size={14} className="opacity-0 group-hover:opacity-100" />
                       </button>
                     ))
                 ) : (
-                  <div className="px-5 py-4 text-xs font-bold text-slate-400">Syncing markets...</div>
+                  <div className="px-5 py-4 text-xs font-bold text-slate-400">Syncing...</div>
                 )}
               </div>
             )}
@@ -135,22 +148,22 @@ export default function TalentExpertMap() {
               key={selectedCountry}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white/80 backdrop-blur-2xl rounded-[3rem] p-12 shadow-[0_40px_100px_-15px_rgba(0,0,0,0.06)] border border-white max-w-lg"
+              className="bg-white/80 backdrop-blur-2xl rounded-[2.5rem] lg:rounded-[3rem] p-8 lg:p-12 shadow-[0_40px_100px_-15px_rgba(0,0,0,0.06)] border border-white max-w-lg mx-auto lg:mx-0"
             >
-              <div className="flex items-center gap-5 mb-10">
-                <Flag code={data?.code} className="w-12 h-8 rounded-md shadow-sm object-cover" />
-                <h3 className="text-5xl font-black text-slate-900 tracking-[-0.04em] leading-none">{selectedCountry}</h3>
+              <div className="flex items-center gap-4 lg:gap-5 mb-8 lg:mb-10">
+                <Flag code={data?.code} className="w-10 lg:w-12 h-6 lg:h-8 rounded-md shadow-sm object-cover" />
+                <h3 className="text-3xl lg:text-5xl font-black text-slate-900 tracking-tight leading-none">{selectedCountry}</h3>
               </div>
               
-              <div className="grid grid-cols-1 gap-3 mb-12">
+              <div className="grid grid-cols-1 gap-3 mb-10 lg:mb-12">
                 {data?.providers?.slice(0, 3).map(p => (
-                  <div key={p} className="flex items-center gap-3 px-6 py-4 bg-white/50 border border-slate-100 rounded-2xl">
+                  <div key={p} className="flex items-center gap-3 px-5 py-3 lg:py-4 bg-white/50 border border-slate-100 rounded-2xl">
                     <div className={`w-2 h-2 rounded-full ${REGION_DATA[selectedCountry] ? 'bg-blue-500' : 'bg-slate-300'}`} />
-                    <span className="text-[12px] font-black text-slate-600 uppercase tracking-widest">{p}</span>
+                    <span className="text-[11px] lg:text-[12px] font-black text-slate-600 uppercase tracking-widest truncate">{p}</span>
                   </div>
                 ))}
               </div>
-              <button className="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em] flex items-center gap-2 hover:text-blue-600 transition-all group">
+              <button className="w-full lg:w-auto text-[11px] font-black text-slate-900 uppercase tracking-[0.3em] flex items-center justify-center lg:justify-start gap-2 hover:text-blue-600 transition-all group">
                 Deep Analysis <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </motion.div>
@@ -158,14 +171,14 @@ export default function TalentExpertMap() {
         </div>
 
         {/* SVG GLOBAL */}
-        <div className="lg:col-span-7 h-[800px] flex items-center justify-center relative translate-x-10">
-          <div className="absolute w-[500px] h-[500px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none" />
+        <div className="lg:col-span-7 h-[400px] sm:h-[600px] lg:h-[800px] flex items-center justify-center relative lg:translate-x-10 order-1 lg:order-2">
+          <div className="absolute w-[300px] lg:w-[500px] h-[300px] lg:h-[500px] bg-blue-500/10 blur-[60px] lg:blur-[100px] rounded-full pointer-events-none" />
 
           <div className="w-full h-full flex items-center justify-center cursor-grab active:cursor-grabbing">
             <ComposableMap
               projection="geoOrthographic"
-              projectionConfig={{ scale: 320, rotate: rotation }}
-              className={`w-[850px] h-[850px] overflow-visible transition-all ${isDragging ? 'duration-0' : 'duration-[1200ms] ease-[cubic-bezier(0.23,1,0.32,1)]'}`}
+              projectionConfig={{ scale: globeScale, rotate: rotation }}
+              className="w-full h-full max-w-[850px] max-h-[850px] overflow-visible transition-all duration-[1200ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
             >
               <defs>
                 <radialGradient id="globeGrad" cx="50%" cy="50%" r="50%">
@@ -217,13 +230,13 @@ export default function TalentExpertMap() {
                   initial={{ opacity: 0, scale: 0.8, y: 10 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.8, y: 10 }}
-                  className="absolute top-[38%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none"
+                  className="absolute top-[35%] lg:top-[38%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none"
                 >
-                  <div className="bg-[#1E293B]/80 backdrop-blur-xl px-6 py-3 rounded-full border border-white/10 shadow-2xl flex items-center gap-3">
-                     <Flag code={data?.code} className="w-5 h-3.5 rounded-sm object-cover" />
-                     <span className="text-[12px] font-black text-white uppercase tracking-tight">{selectedCountry}</span>
+                  <div className="bg-[#1E293B]/80 backdrop-blur-xl px-4 lg:px-6 py-2 lg:py-3 rounded-full border border-white/10 shadow-2xl flex items-center gap-2 lg:gap-3">
+                     <Flag code={data?.code} className="w-4 lg:w-5 h-2.5 lg:h-3.5 rounded-sm object-cover" />
+                     <span className="text-[10px] lg:text-[12px] font-black text-white uppercase tracking-tight whitespace-nowrap">{selectedCountry}</span>
                   </div>
-                  <div className="w-px h-8 bg-gradient-to-t from-white/10 to-transparent mx-auto -mt-0.5" />
+                  <div className="w-px h-6 lg:h-8 bg-gradient-to-t from-white/10 to-transparent mx-auto -mt-0.5" />
                 </motion.div>
               )}
             </AnimatePresence>
