@@ -1,6 +1,6 @@
 import React from "react";
 import { 
-  ArrowRight,
+  
   Wifi,
   PiggyBank,
   RefreshCcw,
