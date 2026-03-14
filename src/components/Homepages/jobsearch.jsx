@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, memo } from "react";
 import { ComposableMap, Geographies, Geography, Sphere } from "react-simple-maps";
 import { motion, AnimatePresence } from "framer-motion";
 import Flag from "react-world-flags";
@@ -14,30 +14,74 @@ const REGION_DATA = {
   "United Kingdom": { code: "GB", onramps: 14, payments: 8, providers: ["Revolut", "Monzo"], coords: [-2, 54] }
 };
 
+// PERFORMANCE: Memoize the map to prevent unnecessary re-renders of heavy SVG paths
+const WorldMap = memo(({ globeScale, rotation, selectedCountry, onCountryClick, isDragging }) => (
+  <ComposableMap
+    projection="geoOrthographic"
+    projectionConfig={{ scale: globeScale, rotate: rotation }}
+    // PERFORMANCE: Use transform-gpu for hardware acceleration
+    className={`w-full h-full max-w-[850px] max-h-[850px] overflow-visible will-change-transform transform-gpu ${
+      isDragging ? "transition-none" : "transition-all duration-[1000ms] ease-out"
+    }`}
+  >
+    <defs>
+      <radialGradient id="globeGrad" cx="50%" cy="50%" r="50%">
+        <stop offset="60%" stopColor="#3B82F6" />
+        <stop offset="100%" stopColor="#1D4ED8" />
+      </radialGradient>
+    </defs>
+    <Sphere fill="url(#globeGrad)" stroke="rgba(255,255,255,0.15)" strokeWidth={0.5} />
+    <Geographies geography={geoUrl}>
+      {({ geographies }) =>
+        geographies.map((geo) => {
+          const countryName = geo.properties.name;
+          const isSelected = selectedCountry === countryName;
+          const hasData = REGION_DATA.hasOwnProperty(countryName);
+
+          return (
+            <Geography
+              key={geo.rsmKey}
+              geography={geo}
+              onClick={(e) => onCountryClick(e, geo, countryName)}
+              style={{
+                default: {
+                  fill: isSelected ? "#FFFFFF" : (hasData ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.1)"),
+                  stroke: "rgba(255,255,255,0.15)",
+                  strokeWidth: 0.5,
+                  outline: "none",
+                },
+                hover: { fill: "#FFFFFF", outline: "none", cursor: "pointer" },
+                pressed: { outline: "none" }
+              }}
+            />
+          );
+        })
+      }
+    </Geographies>
+  </ComposableMap>
+));
+
 export default function TalentExpertMap() {
   const [selectedCountry, setSelectedCountry] = useState("India");
   const [searchQuery, setSearchQuery] = useState("");
   const [rotation, setRotation] = useState([-78, -20, 0]);
   const [isDragging, setIsDragging] = useState(false);
   const [allCountries, setAllCountries] = useState([]); 
-  
-  // Responsive State
   const [globeScale, setGlobeScale] = useState(320);
   
   const dragStartPos = useRef({ x: 0, y: 0 });
   const requestRef = useRef();
 
   useEffect(() => {
-    // Dynamic resizing logic
     const handleResize = () => {
       const width = window.innerWidth;
-      if (width < 640) setGlobeScale(180); // Small Mobile
-      else if (width < 1024) setGlobeScale(250); // Tablet
-      else setGlobeScale(320); // Desktop
+      if (width < 640) setGlobeScale(180); 
+      else if (width < 1024) setGlobeScale(250); 
+      else setGlobeScale(320); 
     };
 
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Initial call
+    window.addEventListener("resize", handleResize, { passive: true });
+    handleResize();
 
     fetch(geoUrl)
       .then(res => res.json())
@@ -70,7 +114,8 @@ export default function TalentExpertMap() {
     if (!isDragging) return;
     if (requestRef.current) cancelAnimationFrame(requestRef.current);
     requestRef.current = requestAnimationFrame(() => {
-      const sensitivity = 0.5;
+      // PERFORMANCE: Reduced sensitivity slightly for smoother mobile tracking
+      const sensitivity = 0.4;
       setRotation(prev => [
         prev[0] + e.movementX * sensitivity,
         prev[1] - e.movementY * sensitivity,
@@ -85,6 +130,15 @@ export default function TalentExpertMap() {
     setSearchQuery("");
   };
 
+  const onCountryClick = (e, geo, countryName) => {
+    const dist = Math.sqrt(Math.pow(e.clientX - dragStartPos.current.x, 2));
+    if (dist < 5) {
+      setSelectedCountry(countryName);
+      const centroid = geoCentroid(geo);
+      setRotation([-centroid[0], -centroid[1], 0]);
+    }
+  };
+
   return (
     <section 
       className="relative min-h-screen bg-[#FDFDFF] flex items-center justify-center py-10 lg:py-20 overflow-hidden font-sans select-none touch-none outline-none"
@@ -94,20 +148,19 @@ export default function TalentExpertMap() {
         dragStartPos.current = { x: e.clientX, y: e.clientY };
       }}
       onMouseUp={() => setIsDragging(false)}
+      onMouseLeave={() => setIsDragging(false)}
     >
       <style dangerouslySetInnerHTML={{ __html: `
-        svg { outline: none !important; user-select: none !important; -webkit-tap-highlight-color: transparent !important; }
-        path { outline: none !important; transition: fill 0.4s ease; }
+        svg { outline: none !important; user-select: none !important; -webkit-tap-highlight-color: transparent !important; pointer-events: auto; }
+        path { outline: none !important; transition: fill 0.3s ease; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
       `}} />
       
-      {/* BRAND BG MESH */}
       <div className="absolute top-0 right-0 w-full lg:w-[800px] h-[400px] lg:h-[800px] bg-blue-100/30 blur-[80px] lg:blur-[140px] rounded-full -translate-y-1/3 translate-x-1/4 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-full lg:w-[600px] h-[300px] lg:h-[600px] bg-indigo-50/50 blur-[60px] lg:blur-[120px] rounded-full translate-y-1/3 -translate-x-1/4 pointer-events-none" />
 
       <div className="max-w-[1550px] mx-auto grid grid-cols-1 lg:grid-cols-12 items-center relative px-6 sm:px-10 gap-8 lg:gap-12">
         
-        {/* DATA CARD & SEARCH */}
         <div className="lg:col-span-5 z-40 space-y-6 order-2 lg:order-1">
           <div className="relative w-full max-w-lg group mx-auto lg:mx-0">
             <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
@@ -170,59 +223,18 @@ export default function TalentExpertMap() {
           </AnimatePresence>
         </div>
 
-        {/* SVG GLOBAL */}
         <div className="lg:col-span-7 h-[400px] sm:h-[600px] lg:h-[800px] flex items-center justify-center relative lg:translate-x-10 order-1 lg:order-2">
           <div className="absolute w-[300px] lg:w-[500px] h-[300px] lg:h-[500px] bg-blue-500/10 blur-[60px] lg:blur-[100px] rounded-full pointer-events-none" />
 
-          <div className="w-full h-full flex items-center justify-center cursor-grab active:cursor-grabbing">
-            <ComposableMap
-              projection="geoOrthographic"
-              projectionConfig={{ scale: globeScale, rotate: rotation }}
-              className="w-full h-full max-w-[850px] max-h-[850px] overflow-visible transition-all duration-[1200ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
-            >
-              <defs>
-                <radialGradient id="globeGrad" cx="50%" cy="50%" r="50%">
-                  <stop offset="60%" stopColor="#3B82F6" />
-                  <stop offset="100%" stopColor="#1D4ED8" />
-                </radialGradient>
-              </defs>
-              <Sphere fill="url(#globeGrad)" stroke="rgba(255,255,255,0.15)" strokeWidth={0.5} />
-              <Geographies geography={geoUrl}>
-                {({ geographies }) =>
-                  geographies.map((geo) => {
-                    const countryName = geo.properties.name;
-                    const isSelected = selectedCountry === countryName;
-                    const hasData = REGION_DATA.hasOwnProperty(countryName);
+          <div className="w-full h-full flex items-center justify-center cursor-grab active:cursor-grabbing overflow-visible">
+            <WorldMap 
+              globeScale={globeScale} 
+              rotation={rotation} 
+              selectedCountry={selectedCountry} 
+              onCountryClick={onCountryClick}
+              isDragging={isDragging}
+            />
 
-                    return (
-                      <Geography
-                        key={geo.rsmKey}
-                        geography={geo}
-                        onClick={(e) => {
-                          const dist = Math.sqrt(Math.pow(e.clientX - dragStartPos.current.x, 2));
-                          if (dist < 5) {
-                            setSelectedCountry(countryName);
-                            const centroid = geoCentroid(geo);
-                            setRotation([-centroid[0], -centroid[1], 0]);
-                          }
-                        }}
-                        style={{
-                          default: {
-                            fill: isSelected ? "#FFFFFF" : (hasData ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.1)"),
-                            stroke: "rgba(255,255,255,0.15)",
-                            strokeWidth: 0.5,
-                            outline: "none",
-                          },
-                          hover: { fill: "#FFFFFF", outline: "none", cursor: "pointer" },
-                        }}
-                      />
-                    );
-                  })
-                }
-              </Geographies>
-            </ComposableMap>
-
-            {/* GLASSMARKER */}
             <AnimatePresence>
               {selectedCountry && !isDragging && (
                 <motion.div 
