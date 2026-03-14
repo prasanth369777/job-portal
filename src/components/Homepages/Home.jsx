@@ -4,6 +4,9 @@ import InfiniteCarousel from "./InfiniteCarousel";
 import BentoBox from "./jobsearch";
 import Mindmp from "./mindamp";
 import StatsDashboard from "./Ausbuilding";
+import Team from "./TeamsOnDemand";
+import Process from "./Process";
+import Consult from "./consult&service";
 import Testimonial from "./Testimonial";
 import CTA from "./CTA";
 
@@ -16,6 +19,9 @@ export default function Home() {
       <BentoBox />
       <Mindmp />
       <StatsDashboard />
+      <Team />
+      <Process />
+      <Consult />
       <Testimonial />
       <CTA />
       
