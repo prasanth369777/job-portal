@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Flag from "react-world-flags";
 import countriesData from "world-countries";
@@ -9,7 +9,9 @@ import {
   MapPinIcon,
   CheckBadgeIcon,
   PlayIcon,
-  ArrowRightIcon
+  ArrowRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon
 } from "@heroicons/react/24/outline";
 
 export default function Hero() {
@@ -17,6 +19,8 @@ export default function Hero() {
   const [location, setLocation] = useState("");
   const [country, setCountry] = useState("US");
   const [activeTab, setActiveTab] = useState("talent");
+  
+  const scrollRef = useRef(null);
 
   const allCountries = countriesData
     .map((c) => ({
@@ -40,10 +44,17 @@ export default function Hero() {
     { name: "USC", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/USC_Trojans_logo.svg/1200px-USC_Trojans_logo.svg.png" }
   ];
 
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const { scrollLeft, clientWidth } = scrollRef.current;
+      const scrollTo = direction === "left" ? scrollLeft - 350 : scrollLeft + 350;
+      scrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="relative min-h-screen bg-gradient-to-b from-blue-50 via-white to-blue-50 pt-24 overflow-hidden font-sans">
       
-      {/* Animation Styles */}
       <style dangerouslySetInnerHTML={{ __html: `
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -55,7 +66,7 @@ export default function Hero() {
         .animate-scroll {
           display: flex;
           width: max-content;
-          animation: scroll 30s linear infinite;
+          animation: scroll 40s linear infinite;
         }
         .animate-scroll:hover {
           animation-play-state: paused;
@@ -69,7 +80,7 @@ export default function Hero() {
           <div className="flex bg-slate-100 rounded-full p-1 border border-slate-200">
             <button
               onClick={() => setActiveTab("talent")}
-              className={`px-8 py-3 text-sm font-black rounded-full transition-all duration-300 ${
+              className={`px-8 py-3 text-sm font-bold rounded-full transition-all duration-300 ${
                 activeTab === "talent" ? "bg-white shadow-sm text-blue-600" : "text-slate-500"
               }`}
             >
@@ -77,7 +88,7 @@ export default function Hero() {
             </button>
             <button
               onClick={() => setActiveTab("consulting")}
-              className={`px-8 py-3 text-sm font-black rounded-full transition-all duration-300 ${
+              className={`px-8 py-3 text-sm font-bold rounded-full transition-all duration-300 ${
                 activeTab === "consulting" ? "bg-white shadow-sm text-blue-600" : "text-slate-500"
               }`}
             >
@@ -98,12 +109,12 @@ export default function Hero() {
 
             {/* LEFT CONTENT */}
             <div className="lg:col-span-7 space-y-8">
-              <div className="flex items-center gap-2 text-blue-600 text-[11px] font-black uppercase tracking-widest">
+              <div className="flex items-center gap-2 text-blue-600 text-[11px] font-bold uppercase tracking-widest">
                 <CheckBadgeIcon className="w-5 h-5" />
                 {activeTab === "talent" ? "Verified Career Network" : "Premium Education Partners"}
               </div>
 
-              <h1 className="text-5xl lg:text-[64px] font-black text-slate-900 leading-[1.1] tracking-tight">
+              <h1 className="text-5xl lg:text-[64px] font-bold text-slate-900 leading-[1.1] tracking-tight">
                 {activeTab === "talent" ? (
                   <>Find your dream <br /> <span className="text-blue-600 italic">Career opportunity</span></>
                 ) : (
@@ -118,7 +129,6 @@ export default function Hero() {
               </p>
 
               {activeTab === "talent" ? (
-                /* SEARCH - Only visible on Jobs Tab */
                 <div className="bg-white border border-slate-200 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-3">
                   <div className="grid lg:grid-cols-12 gap-3 items-center">
                     <div className="lg:col-span-4 flex items-center gap-3 px-4 border-r border-slate-100">
@@ -128,7 +138,7 @@ export default function Hero() {
                         placeholder="Job title or skill"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        className="w-full outline-none text-sm font-bold text-slate-700"
+                        className="w-full outline-none text-sm font-semibold text-slate-700"
                       />
                     </div>
 
@@ -137,7 +147,7 @@ export default function Hero() {
                       <select
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
-                        className="outline-none text-sm font-bold text-slate-700 bg-transparent w-full"
+                        className="outline-none text-sm font-semibold text-slate-700 bg-transparent w-full"
                       >
                         {allCountries.map((c) => (
                           <option key={c.code} value={c.code}>{c.name}</option>
@@ -152,21 +162,20 @@ export default function Hero() {
                         placeholder="Remote"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
-                        className="outline-none text-sm font-bold text-slate-700 w-full"
+                        className="outline-none text-sm font-semibold text-slate-700 w-full"
                       />
                     </div>
 
-                    <button className="lg:col-span-2 bg-blue-600 text-white rounded-2xl py-3 font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-200">
+                    <button className="lg:col-span-2 bg-blue-600 text-white rounded-2xl py-3 font-bold text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-200">
                       Search
                     </button>
                   </div>
                 </div>
               ) : (
-                /* ACTION BUTTON - Replaces search on Study Abroad slide */
                 <motion.button 
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="bg-[#00d084] text-white px-10 py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-[#00b975] transition-all shadow-xl shadow-emerald-100 group"
+                  className="bg-[#00d084] text-white px-10 py-5 rounded-2xl font-bold text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-[#00b975] transition-all shadow-xl shadow-emerald-100 group"
                 >
                   Explore Global Universities <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
@@ -176,16 +185,11 @@ export default function Hero() {
               <div className="flex items-center gap-4 pt-4">
                 <div className="flex -space-x-3">
                   {[1,2,3,4].map(i => (
-                    <img
-                      key={i}
-                      src={`https://i.pravatar.cc/100?img=${i+10}`}
-                      className="w-10 h-10 rounded-full border-4 border-white shadow-md"
-                      alt=""
-                    />
+                    <img key={i} src={`https://i.pravatar.cc/100?img=${i+10}`} className="w-10 h-10 rounded-full border-4 border-white shadow-md" alt="" />
                   ))}
                 </div>
-                <p className="text-sm text-slate-500 font-bold">
-                  <span className="text-slate-900 font-black">12,000+</span> success stories this year
+                <p className="text-sm text-slate-500 font-semibold">
+                  <span className="text-slate-900 font-bold">12,000+</span> success stories this year
                 </p>
               </div>
             </div>
@@ -201,27 +205,15 @@ export default function Hero() {
                   animate={{ opacity: 1, scale: 1 }}
                 />
               ) : (
-                <motion.div
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="space-y-4 w-full"
-                >
+                <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} className="space-y-4 w-full">
                   <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl group border-4 border-white">
-                    <img
-                      src="https://images.unsplash.com/photo-1523050853063-bd8012fec040?q=80&w=800"
-                      className="w-full h-[320px] object-cover group-hover:scale-105 transition-transform duration-700"
-                      alt="Study Abroad"
-                    />
+                    <img src="https://images.unsplash.com/photo-1523050853063-bd8012fec040?q=80&w=800" className="w-full h-[320px] object-cover group-hover:scale-105 transition-transform duration-700" alt="Study Abroad" />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-all">
                       <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30">
                         <PlayIcon className="w-10 h-10 text-white fill-white ml-1" />
                       </div>
                     </div>
-                    <div className="absolute top-8 left-8">
-                       <span className="text-white font-black text-2xl tracking-tighter uppercase italic opacity-90">Success Study</span>
-                    </div>
                   </div>
-
                   <div className="grid grid-cols-4 bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm">
                     {partnerLogos.map((p, idx) => (
                       <div key={idx} className="flex items-center justify-center p-6 border-r border-slate-50 last:border-r-0 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all">
@@ -232,38 +224,44 @@ export default function Hero() {
                 </motion.div>
               )}
             </div>
-
           </motion.div>
         </AnimatePresence>
 
-        {/* AUTO-SCROLLING STUDENT REVIEWS */}
-        <div className="mt-28 mb-10 overflow-hidden relative">
-          <div className="flex flex-col items-center mb-10">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em]">Global Student Feedback</span>
-            <div className="h-1 w-12 bg-blue-600 rounded-full mt-3"></div>
+        {/* REVIEWS SECTION WITH NAV */}
+        <div className="mt-28 mb-10 relative">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-10 px-2 gap-4">
+            <div className="text-center sm:text-left">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.5em]">Global Student Feedback</span>
+              <div className="h-1 w-12 bg-blue-600 rounded-full mt-3 mx-auto sm:mx-0"></div>
+            </div>
+            
+            {/* Nav Controls */}
+            <div className="flex gap-2">
+              <button onClick={() => scroll("left")} className="p-3 rounded-full bg-white border border-slate-200 hover:bg-slate-50 transition-all shadow-sm text-slate-600">
+                <ChevronLeftIcon className="w-5 h-5" />
+              </button>
+              <button onClick={() => scroll("right")} className="p-3 rounded-full bg-white border border-slate-200 hover:bg-slate-50 transition-all shadow-sm text-slate-600">
+                <ChevronRightIcon className="w-5 h-5" />
+              </button>
+            </div>
           </div>
           
-          <div className="flex no-scrollbar">
+          <div ref={scrollRef} className="flex overflow-x-auto no-scrollbar scroll-smooth">
             <div className="animate-scroll gap-8 flex">
-              {/* Double the array to create a seamless infinite loop */}
               {[...clients, ...clients, ...clients].map((c, i) => (
                 <div
                   key={i}
                   className="flex items-center gap-5 bg-white border border-slate-100 p-6 rounded-[2rem] min-w-[320px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl hover:border-blue-200 transition-all duration-500 cursor-default group"
                 >
                   <div className="relative">
-                    <img
-                      src={c.img}
-                      className="w-14 h-14 rounded-2xl object-cover grayscale-[30%] group-hover:grayscale-0 transition-all"
-                      alt=""
-                    />
+                    <img src={c.img} className="w-14 h-14 rounded-2xl object-cover grayscale-[30%] group-hover:grayscale-0 transition-all" alt="" />
                     <div className="absolute -top-2 -right-2 bg-blue-600 text-white p-1 rounded-full border-2 border-white shadow-sm">
                       <CheckBadgeIcon className="w-3 h-3" />
                     </div>
                   </div>
                   <div>
-                    <p className="font-black text-slate-900 tracking-tight">{c.name}</p>
-                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">{c.role}</p>
+                    <p className="font-bold text-slate-900 tracking-tight">{c.name}</p>
+                    <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mt-1">{c.role}</p>
                     <div className="flex gap-1 mt-2">
                        {[1,2,3,4,5].map(s => <span key={s} className="text-amber-400 text-[10px]">★</span>)}
                     </div>
@@ -273,7 +271,6 @@ export default function Hero() {
             </div>
           </div>
           
-          {/* Gradient Fades for the edges */}
           <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-blue-50 to-transparent z-10 pointer-events-none" />
           <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-blue-50 to-transparent z-10 pointer-events-none" />
         </div>
