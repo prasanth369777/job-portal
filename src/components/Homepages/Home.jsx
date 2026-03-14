@@ -7,6 +7,8 @@ import StatsDashboard from "./Ausbuilding";
 import Team from "./TeamsOnDemand";
 import Process from "./Process";
 import Consult from "./consult&service";
+import Why from "./whyus";
+import Collabs from "./collabs";
 import Testimonial from "./Testimonial";
 import CTA from "./CTA";
 
@@ -22,6 +24,8 @@ export default function Home() {
       <Team />
       <Process />
       <Consult />
+      <Why />
+      <Collabs />
       <Testimonial />
       <CTA />
       
