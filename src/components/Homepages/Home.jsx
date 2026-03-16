@@ -9,6 +9,7 @@ import Process from "./Process";
 import Consult from "./consult&service";
 import Why from "./whyus";
 import Collabs from "./collabs";
+import Faqhome from "./Faqhome";
 import Testimonial from "./Testimonial";
 import CTA from "./CTA";
 
@@ -26,6 +27,7 @@ export default function Home() {
       <Consult />
       <Why />
       <Collabs />
+        <Faqhome />
       <Testimonial />
       <CTA />
       
