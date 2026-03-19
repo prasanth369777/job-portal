@@ -16,7 +16,7 @@ export default function CategoryBanner({ activeTab, setActiveTab }) {
         - no-scrollbar (optional) hides the scrollbar track for a cleaner look.
       */}
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-16 overflow-x-auto no-scrollbar">
-        <div className="flex items-center justify-start gap-6 md:gap-8 lg:gap-12 h-14 lg:h-16 min-w-max">
+        <div className="flex items-center justify-start gap-6 md:gap-8 lg:gap-12 h-14 lg:h-12 min-w-max">
           {categories.map((cat) => {
             const isActive = activeTab === cat.id;
             return (

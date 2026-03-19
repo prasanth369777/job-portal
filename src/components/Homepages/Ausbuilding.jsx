@@ -1,98 +1,167 @@
 import React from "react";
-import { 
-  
-  Wifi,
-  PiggyBank,
-  RefreshCcw,
-  Zap,
-  Clock
-} from "lucide-react";
+import { Code, PenTool, Megaphone, BarChart, Layout, Layers } from "lucide-react";
 
-const stats = [
-  { label: "Remote jobs", value: "(9,607)", detail: "Work where's best for you.", color: "bg-[#D1FAE5]", icon: <Wifi size={18} className="text-slate-900" /> },
-  { label: "Jobs offering flexitime", value: "(7,967)", detail: "Work whenever's best for you.", color: "bg-white", icon: <Clock size={18} className="text-slate-900" /> },
-  { label: "Mini-jobs", value: "(3,940)", detail: "Start small or earn a little extra.", color: "bg-white", icon: <PiggyBank size={18} className="text-slate-900" /> },
-  { label: "Jobs for career changers", value: "(34,923)", detail: "See where your skills match.", color: "bg-[#F3E8FF]", icon: <RefreshCcw size={18} className="text-slate-900" /> },
-  { label: "Part-time jobs", value: "(39,839)", detail: "Free up time for other things.", color: "bg-[#D1FAE5]", icon: <Clock size={18} className="text-slate-900" /> },
+const categories = [
+  { name: "Developers", icon: <Code size={16}/> },
+  { name: "Designers", icon: <PenTool size={16}/> },
+  { name: "Marketing Experts", icon: <Megaphone size={16}/> },
+  { name: "Management Consultants", icon: <BarChart size={16}/> },
+  { name: "Project Managers", icon: <Layout size={16}/> },
+  { name: "Product Managers", icon: <Layers size={16}/> },
 ];
 
-export default function BentoStatsDashboard() {
+const talents = [
+  {
+    name: "Adam Ivansky",
+    role: "Python Developer",
+    img: "https://i.pravatar.cc/400?img=11",
+    skills: ["SQL", "Python", "Spark", "Machine Learning"],
+    company: "Apple"
+  },
+  {
+    name: "Manuela Kajkara",
+    role: "AR/VR Developer",
+    img: "https://i.pravatar.cc/400?img=32",
+    skills: ["Software Architecture", "C#", "REST API", "Git"],
+    company: "Meta"
+  },
+  {
+    name: "Nimrod Talmon",
+    role: "AI Developer",
+    img: "https://i.pravatar.cc/400?img=15",
+    skills: ["Data Science", "Python", "Algorithms", "Artificial Intelligence"],
+    company: "Google"
+  }
+];
+
+export default function TalentShowcase() {
+
   return (
-    <section className="bg-[#0F172A] py-16 px-6 font-sans">
-      <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5">
-        
-        {/* LEFT PANEL: Set Job Preferences */}
-        <div className="lg:col-span-3 bg-[#A5F3FC] rounded-[2.5rem] p-10 flex flex-col justify-between min-h-[500px]">
-          <div>
-            <h2 className="text-4xl font-black text-slate-950 leading-[1.1] mb-6">
-              Set your job <br /> preferences
-            </h2>
-            <p className="text-slate-800 text-lg font-medium mb-8 leading-relaxed">
-              Pick what's important to you for better job matches. <span className="font-black">It's quick and simple!</span>
-            </p>
-            
-            <div className="flex flex-wrap gap-3 mb-10">
-              {["+ Your career level", "+ Your workplace", "+ Salary expectations"].map((tag) => (
-                <span key={tag} className="px-4 py-2 bg-white/50 border border-white/20 rounded-full text-[13px] font-bold text-slate-900 whitespace-nowrap">
-                  {tag}
-                </span>
-              ))}
+
+    <section className="bg-[#F8FAFC] py-20 px-6">
+
+      <div className="max-w-[1400px] mx-auto">
+
+        {/* TITLE */}
+
+        <h2 className="text-4xl font-semibold text-center text-gray-900 mb-12">
+          Meet Talent in Our Network
+        </h2>
+
+
+        {/* CATEGORY TABS */}
+
+        <div className="flex items-center gap-8 border-b border-gray-200 pb-4 mb-10 overflow-x-auto">
+
+          {categories.map((cat,i)=>(
+            <div
+              key={i}
+              className={`flex items-center gap-2 text-sm cursor-pointer pb-3 transition-all
+              ${i===0 
+                ? "text-blue-600 border-b-2 border-blue-600" 
+                : "text-gray-600 hover:text-blue-600 hover:border-b-2 hover:border-blue-600"}
+              `}
+            >
+              {cat.icon}
+              {cat.name}
             </div>
+          ))}
+
+        </div>
+
+
+        {/* TALENT GRID */}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          {talents.map((talent,i)=>(
+
+            <div 
+              key={i} 
+              className="bg-white border border-gray-200 group transition-all duration-300 hover:border-blue-500 hover:shadow-xl hover:-translate-y-1"
+            >
+
+              {/* IMAGE */}
+
+              <div className="p-6 overflow-hidden">
+
+                <img
+                  src={talent.img}
+                  alt={talent.name}
+                  className="w-full h-[220px] object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+
+              </div>
+
+
+              {/* CONTENT */}
+
+              <div className="px-6 pb-6">
+
+                <h3 className="font-semibold text-blue-600 mb-1 group-hover:text-blue-700">
+                  {talent.name}
+                </h3>
+
+                <p className="text-sm text-gray-600 mb-4">
+                  {talent.role}
+                </p>
+
+
+                {/* SKILLS */}
+
+                <div className="flex flex-wrap gap-2 mb-5">
+
+                  {talent.skills.map((skill,idx)=>(
+                    <span
+                      key={idx}
+                      className="text-xs border border-gray-300 px-2 py-1 text-gray-600 transition-all hover:border-blue-500 hover:text-blue-600"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+
+                </div>
+
+
+                <div className="text-sm text-gray-500">
+                  Previously at
+                </div>
+
+                <div className="text-lg font-semibold text-gray-800">
+                  {talent.company}
+                </div>
+
+              </div>
+
+            </div>
+
+          ))}
+
+
+          {/* CTA CARD */}
+
+          <div className="bg-gradient-to-br from-blue-900 to-blue-700 text-white flex flex-col justify-center items-center p-10 text-center transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
+
+            <h3 className="text-xl font-semibold mb-3">
+              Discover 20,000+ More Talent
+            </h3>
+
+            <p className="text-sm opacity-80 mb-6">
+              in the global network
+            </p>
+
+            <button className="bg-green-500 text-white px-5 py-3 text-sm font-semibold hover:bg-green-600 transition">
+              Discover Talent
+            </button>
+
           </div>
-          
-          <button className="w-full bg-slate-950 text-white py-5 rounded-full font-black text-sm uppercase tracking-widest hover:bg-white hover:text-slate-950 transition-all shadow-xl">
-            Save preferences
-          </button>
+
         </div>
 
-        {/* CENTER IMAGE PANEL */}
-        <div className="lg:col-span-3 h-[500px] lg:h-auto overflow-hidden rounded-[2.5rem] relative group">
-          <img 
-            src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800" 
-            alt="User style" 
-            className="w-full h-full object-cover grayscale-[20%] group-hover:scale-105 transition-transform duration-700"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent" />
-        </div>
-
-        {/* RIGHT GRID PANEL: Stats Tiles */}
-        <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <StatTile stat={stats[0]} />
-          <StatTile stat={stats[1]} />
-          <StatTile stat={stats[2]} />
-
-          {/* Illustration Box */}
-          <div className="bg-[#FAE8FF] rounded-[2.5rem] flex items-center justify-center p-8 overflow-hidden min-h-[240px]">
-             <div className="relative">
-                <div className="w-24 h-24 bg-blue-600 rounded-full blur-3xl opacity-20 absolute top-0 left-0" />
-                <Zap size={80} strokeWidth={1} className="text-blue-600 relative z-10 rotate-12" />
-             </div>
-          </div>
-
-          <StatTile stat={stats[3]} />
-          <StatTile stat={stats[4]} />
-        </div>
       </div>
+
     </section>
-  );
-}
 
-function StatTile({ stat }) {
-  return (
-    <div className={`${stat.color} rounded-[2.5rem] p-8 flex flex-col justify-between hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 cursor-pointer border border-white/10`}>
-      <div className="space-y-4">
-        <div className="w-12 h-12 rounded-full border border-slate-950/10 flex items-center justify-center bg-white/30">
-          {stat.icon}
-        </div>
-        <div>
-          <h4 className="text-xl font-black text-slate-950 leading-tight">
-            {stat.label} <span className="font-bold opacity-60">{stat.value}</span>
-          </h4>
-          <p className="text-slate-600 text-sm font-medium mt-2">
-            {stat.detail}
-          </p>
-        </div>
-      </div>
-    </div>
   );
+
 }

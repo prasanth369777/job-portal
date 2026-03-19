@@ -15,6 +15,7 @@ import Faqhome from "./Faqhome";
 import ExpertSection from "./ExpertSection"; 
 import Testimonial from "./Testimonial";
 import CTA from "./CTA";
+import Banner from "../Pages/banner";
 
 // A small wrapper to handle scroll animations for each section
 const ScrollSection = ({ children }) => (
@@ -31,7 +32,7 @@ const ScrollSection = ({ children }) => (
 export default function Home() {
   return (
     <main className="min-h-screen bg-white">
-      {/* 1. Added Navbar here */}
+      <Banner />
       <Navbar />
 
       {/* 2. Hero stays static or has its own internal entry animation */}
