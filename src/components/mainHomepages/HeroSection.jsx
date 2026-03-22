@@ -5,10 +5,21 @@ import { useNavigate } from "react-router-dom"; // 1. Import useNavigate
 
 // Sub-component to handle individual card transforms safely
 const FanningCard = ({ img, index, scrollYProgress }) => {
+  // Center index is 5. Images 0-4 move left, 6-10 move right.
   const multiplier = index - 5;
-  const xOffset = useTransform(scrollYProgress, [0, 0.5], [0, multiplier * 190]);
+  
+  // Responsive multiplier: smaller offset on mobile
+  const responsiveOffset = typeof window !== 'undefined' && window.innerWidth < 768 ? 80 : 190;
+  
+  // 1. xOffset: Adjusted dynamically for container size
+  const xOffset = useTransform(scrollYProgress, [0, 0.5], [0, multiplier * responsiveOffset]);
+  
+  // 2. rotation: Starts at a fan angle and goes to 0 (straight)
   const rotation = useTransform(scrollYProgress, [0, 0.5], [multiplier * 10, 0]);
+  
+  // 3. scale: Center image grows slightly larger
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, index === 5 ? 1.2 : 1.05]);
+  
   const zIndex = index === 5 ? 50 : 40 - Math.abs(multiplier);
 
   return (
@@ -20,7 +31,7 @@ const FanningCard = ({ img, index, scrollYProgress }) => {
         scale: scale,
         backgroundImage: `url(${img})` 
       }}
-      className="absolute inset-0 bg-cover bg-center rounded-2xl shadow-2xl border-4 border-white origin-bottom transition-shadow duration-500 hover:shadow-indigo-500/20"
+      className="absolute inset-0 bg-cover bg-center rounded-xl md:rounded-2xl shadow-xl md:shadow-2xl border-2 md:border-4 border-white origin-bottom transition-shadow duration-500 hover:shadow-indigo-500/20"
     />
   );
 };
@@ -36,6 +47,7 @@ export default function Hero() {
     offset: ["start end", "end start"]
   });
 
+  // Button Animation: Fades in as expansion completes
   const btnOpacity = useTransform(scrollYProgress, [0.4, 0.6], [0, 1]);
   const btnY = useTransform(scrollYProgress, [0.4, 0.6], [20, 0]);
 
@@ -50,8 +62,13 @@ export default function Hero() {
   // 3. New redirection handler
   const handleTabClick = (tab) => {
     setActiveTab(tab);
+    
     if (tab === "Job Seeker") {
-      navigate("/job-seeker"); // Replace with your actual route
+      navigate("/job-seeker"); 
+    } else if (tab === "Ausbildung") {
+      navigate("/aus-bildung"); // Redirects to your Ausbildung sectors page
+    } else if (tab === "Study Abroad") {
+      navigate("/study-abroad"); // Placeholder for your future study abroad page
     }
   };
 
@@ -83,27 +100,31 @@ export default function Hero() {
   ];
 
   return (
-    <section className="pt-12 md:pt-20 pb-40 bg-[#fafafa] font-sans overflow-hidden">
+    <section className="pt-8 md:pt-20 pb-20 md:pb-40 bg-[#d3d7e3] font-sans overflow-hidden">
       <style dangerouslySetInnerHTML={{ __html: `.no-scrollbar::-webkit-scrollbar { display: none; }` }} />
 
-      <div className="max-w-[1440px] mx-auto px-6 md:px-10">
+      {/* Main Container increased to 1440px */}
+      <div className="max-w-[1440px] mx-auto px-4 md:px-10">
         
+        {/* HERO HEADER */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10 md:mb-16">
           <h1 className="text-4xl md:text-7xl font-bold text-gray-900 tracking-tight mb-4 md:mb-5">
             altus <span className="text-indigo-600 font-medium">marketplace</span>
           </h1>
-          <p className="text-base md:text-2xl text-gray-500 max-w-3xl mx-auto font-medium leading-relaxed">
+          <p className="text-lg md:text-2xl text-gray-500 max-w-3xl mx-auto font-medium leading-relaxed px-2">
             Your gateway to global careers. Connect with verified service providers and world-class talent.
           </p>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto mb-16 md:mb-24">
-          <div className="flex gap-10 mb-8 justify-center border-b border-gray-200 overflow-x-auto no-scrollbar">
+        {/* SEARCH SECTION */}
+        <div className="max-w-4xl mx-auto mb-12 md:mb-24">
+          {/* Tabs Header */}
+          <div className="flex gap-4 md:gap-10 mb-8 justify-start md:justify-center border-b border-gray-200 overflow-x-auto no-scrollbar px-4 md:px-0">
             {navigationTabs.map((tab) => (
               <button 
                 key={tab} 
-                onClick={() => handleTabClick(tab)} // Updated trigger
-                className="relative pb-4 text-sm font-bold uppercase tracking-wider transition-all whitespace-nowrap"
+                onClick={() => handleTabClick(tab)} 
+                className="relative pb-4 text-[12px] md:text-sm font-bold uppercase tracking-wider transition-all whitespace-nowrap"
               >
                 <span className={activeTab === tab ? "text-indigo-600" : "text-gray-400"}>{tab}</span>
                 {activeTab === tab && <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600" />}
@@ -111,15 +132,16 @@ export default function Hero() {
             ))}
           </div>
 
-          <div className="max-w-4xl mx-auto">
+          {/* Search Input Container */}
+          <div className="max-w-4xl mx-auto px-4 md:px-0">
             <label className="block text-sm font-bold text-gray-900 mb-2">Search</label>
-            <div className={`relative flex items-center bg-white border transition-all duration-200 ${isFocused ? "border-gray-900 ring-0" : "border-gray-300"}`}>
+            <div className={`relative flex items-center bg-white border transition-all duration-200 ${isFocused ? "border-gray-900 ring-0 shadow-lg" : "border-gray-300"}`}>
               <input 
                 type="text" 
                 onFocus={() => setIsFocused(true)} 
                 onBlur={() => setIsFocused(false)} 
                 placeholder="" 
-                className="w-full px-4 py-3 outline-none text-gray-800 bg-transparent text-lg font-normal" 
+                className="w-full px-4 py-3 outline-none text-gray-800 bg-transparent text-base md:text-lg font-normal" 
               />
               <div className="pr-4 text-gray-900">
                 <Search size={20} strokeWidth={1.5} />
@@ -127,11 +149,11 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-3 mt-6 justify-center">
+          <div className="flex flex-wrap gap-2 md:gap-3 mt-6 justify-center px-4 md:px-0">
             <AnimatePresence mode="wait">
               <motion.div key={activeTab} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-wrap gap-2 justify-center">
                 {relatedData[activeTab].map((item) => (
-                  <button key={item} className="text-xs px-5 py-2 bg-white border border-gray-200 text-gray-600 font-semibold rounded-full hover:border-indigo-300 hover:text-indigo-600 transition-all shadow-sm">
+                  <button key={item} className="text-[10px] md:text-xs px-3 md:px-5 py-1.5 md:py-2 bg-white border border-gray-200 text-gray-600 font-semibold rounded-full hover:border-indigo-300 hover:text-indigo-600 transition-all shadow-sm">
                     {item}
                   </button>
                 ))}
@@ -140,36 +162,44 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="mb-24 px-4">
-          <p className="text-center text-[11px] uppercase tracking-[0.3em] font-black text-gray-400 mb-10">
-            Trusted by Global Institutions
-          </p>
-          
-          <div className="relative max-w-full overflow-hidden">
-            <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#fafafa] to-transparent z-10 pointer-events-none hidden md:block" />
-            <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#fafafa] to-transparent z-10 pointer-events-none hidden md:block" />
+       {/* PARTNER SECTION */}
+<div className="mb-16 md:mb-24 px-4">
+  <p className="text-center text-[10px] md:text-[11px] uppercase tracking-[0.3em] font-black text-gray-600 mb-8 md:mb-10">
+    Trusted by Global Institutions
+  </p>
+  
+  <div className="relative max-w-full overflow-hidden">
+    
+    {/* --- CORNER FADES --- */}
+    {/* Left Fade */}
+    <div className="absolute inset-y-0 left-0 w-16 md:w-32 bg-gradient-to-r from-[#d3d7e3] to-transparent z-10 pointer-events-none" />
+    
+    {/* Right Fade */}
+    <div className="absolute inset-y-0 right-0 w-16 md:w-32 bg-gradient-to-l from-[#d3d7e3] to-transparent z-10 pointer-events-none" />
+    {/* ------------------- */}
 
-            <div className="flex items-center justify-start md:justify-center gap-4 overflow-x-auto no-scrollbar pb-4">
-              {partners.map((p, i) => (
-                <div 
-                  key={i} 
-                  className="flex items-center gap-3 px-6 py-3 bg-white border border-gray-100 shadow-sm rounded-full transition-all hover:border-gray-200 hover:shadow-md cursor-pointer shrink-0"
-                >
-                  <img src={p.logo} alt={p.name} className="h-5 md:h-6 object-contain" />
-                  <span className="text-xs md:text-sm font-semibold text-gray-700 whitespace-nowrap">{p.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+    <div className="flex items-center justify-start md:justify-center gap-3 md:gap-4 overflow-x-auto no-scrollbar pb-4 scroll-smooth px-4 md:px-10">
+      {partners.map((p, i) => (
+        <div 
+          key={i} 
+          className="flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-3 bg-white border border-gray-100 shadow-sm rounded-full transition-all hover:border-gray-200 hover:shadow-md cursor-pointer shrink-0"
+        >
+          <img src={p.logo} alt={p.name} className="h-4 md:h-6 w-auto object-contain" />
+          <span className="text-[10px] md:text-sm font-semibold text-gray-700 whitespace-nowrap">{p.name}</span>
         </div>
+      ))}
+    </div>
+  </div>
+</div>
 
-        <div ref={galleryRef} className="mt-10 py-10 relative min-h-[500px] flex flex-col items-center">
-          <div className="text-center mb-10">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">Our Global Community</h2>
+        {/* EXPANDING 11-IMAGE STACK - COMPACT HEIGHT */}
+        <div ref={galleryRef} className="mt-10 py-10 relative min-h-[400px] md:min-h-[500px] flex flex-col items-center">
+          <div className="text-center mb-10 px-4">
+            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 tracking-tight leading-tight">Our Global Community</h2>
           </div>
 
-          <div className="sticky top-40 h-[350px] flex justify-center items-center z-20 pointer-events-none w-full">
-            <div className="relative w-56 h-72 md:w-64 md:h-80">
+          <div className="sticky top-40 h-[280px] md:h-[350px] flex justify-center items-center z-20 pointer-events-none w-full">
+            <div className="relative w-40 h-56 md:w-64 md:h-80">
               {galleryImages.map((img, index) => (
                 <FanningCard 
                   key={index} 
@@ -181,11 +211,12 @@ export default function Hero() {
             </div>
           </div>
 
+          {/* BOTTOM CTA BUTTON */}
           <motion.div 
             style={{ opacity: btnOpacity, y: btnY }}
-            className="mt-20 relative z-30"
+            className="mt-16 md:mt-20 relative z-30"
           >
-            <button className="group px-10 py-4 bg-[#051a49] text-white rounded-full font-bold text-lg flex items-center gap-3 shadow-xl hover:bg-indigo-600 transition-all active:scale-95">
+            <button className="group px-6 md:px-10 py-3 md:py-4 bg-[#051a49] text-white rounded-full font-bold text-base md:text-lg flex items-center gap-3 shadow-xl hover:bg-indigo-600 transition-all active:scale-95">
               Explore Our Network
               <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
             </button>
@@ -194,4 +225,4 @@ export default function Hero() {
       </div>
     </section>
   );
-} 
+}

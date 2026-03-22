@@ -10,6 +10,8 @@ import Navigation2 from "./components/Pages/Nav2";
 
 import Jobhomepage from "../src/components/Homepagess/Jobseeker/Homepage";
 
+import Ausbuild from "../src/components/Homepagess/Ausbuilung/Homepage";
+
 
 function AppContent() {
   const location = useLocation();
@@ -28,6 +30,7 @@ function AppContent() {
 
 
            <Route path="/Job-seeker" element={<Jobhomepage />} />
+           <Route path="/aus-bildung" element={<Ausbuild />} />
       
         </Routes>
       </div>

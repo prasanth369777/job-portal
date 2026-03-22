@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus} from "lucide-react";
+import { Plus } from "lucide-react";
 
 export default function ExpertSkillsets() {
   const [activeId, setActiveId] = useState(null);
@@ -32,15 +32,15 @@ export default function ExpertSkillsets() {
   ];
 
   return (
-    <section className="py-24 bg-[#fafafa] font-sans">
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-20">
+    <section className="py-12 md:py-24 bg-[#fafafa] font-sans">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-20">
         
         {/* Header Section */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 md:mb-16">
           <motion.h2 
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-4xl font-bold text-slate-900 tracking-tight"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 tracking-tight"
           >
             Discover Our Expert Skillsets
           </motion.h2>
@@ -53,21 +53,21 @@ export default function ExpertSkillsets() {
             {skills.map((skill, index) => (
               <div 
                 key={skill.id} 
-                className={`relative border-slate-50 p-6 sm:px-10 group transition-colors hover:bg-slate-50/50 ${
+                className={`relative border-slate-50 p-5 sm:p-6 md:px-10 group transition-colors hover:bg-slate-50/50 ${
                   index % 2 === 0 ? "md:border-r" : ""
                 } ${
                   index < skills.length - 2 ? "border-b" : "max-md:border-b"
-                }`}
+                } ${index === skills.length - 2 ? "md:border-b-0" : ""}`}
               >
                 <button 
                   onClick={() => setActiveId(activeId === skill.id ? null : skill.id)}
                   className="w-full flex items-center justify-between text-left"
                 >
-                  <span className="text-[15px] font-bold text-slate-800 transition-colors group-hover:text-indigo-600">
+                  <span className="text-sm sm:text-[15px] font-bold text-slate-800 transition-colors group-hover:text-indigo-600">
                     {skill.title}
                   </span>
                   
-                  <div className="relative flex items-center justify-center">
+                  <div className="relative flex items-center justify-center shrink-0 ml-4">
                      <Plus 
                         size={20} 
                         className={`text-slate-400 transition-all duration-300 transform ${
@@ -91,11 +91,11 @@ export default function ExpertSkillsets() {
                       exit={{ opacity: 0, height: 0 }}
                       className="overflow-hidden"
                     >
-                      <div className="pt-6 flex flex-wrap gap-2">
+                      <div className="pt-4 md:pt-6 flex flex-wrap gap-2">
                         {skill.content.map((item) => (
                           <span 
                             key={item} 
-                            className="px-3 py-1 bg-white border border-slate-200 text-[11px] font-bold text-slate-500 rounded-full hover:border-indigo-300 hover:text-indigo-600 transition-all cursor-pointer"
+                            className="px-2.5 py-1 bg-white border border-slate-200 text-[10px] sm:text-[11px] font-bold text-slate-500 rounded-full hover:border-indigo-300 hover:text-indigo-600 transition-all cursor-pointer"
                           >
                             {item}
                           </span>
@@ -110,7 +110,7 @@ export default function ExpertSkillsets() {
         </div>
 
         {/* Subtle Decorative Circle matching Image */}
-        <div className="absolute top-[60%] left-[50%] -translate-x-1/2 w-4 h-4 rounded-full border-2 border-pink-400 opacity-40 pointer-events-none" />
+        <div className="absolute top-[60%] left-[50%] -translate-x-1/2 w-4 h-4 rounded-full border-2 border-pink-400 opacity-40 pointer-events-none hidden sm:block" />
       </div>
     </section>
   );
