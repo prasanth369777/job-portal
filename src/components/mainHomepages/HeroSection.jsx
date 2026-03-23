@@ -1,25 +1,16 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { Search, ArrowRight } from "lucide-react";
-import { useNavigate } from "react-router-dom"; // 1. Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 // Sub-component to handle individual card transforms safely
 const FanningCard = ({ img, index, scrollYProgress }) => {
-  // Center index is 5. Images 0-4 move left, 6-10 move right.
   const multiplier = index - 5;
-  
-  // Responsive multiplier: smaller offset on mobile
   const responsiveOffset = typeof window !== 'undefined' && window.innerWidth < 768 ? 80 : 190;
   
-  // 1. xOffset: Adjusted dynamically for container size
   const xOffset = useTransform(scrollYProgress, [0, 0.5], [0, multiplier * responsiveOffset]);
-  
-  // 2. rotation: Starts at a fan angle and goes to 0 (straight)
   const rotation = useTransform(scrollYProgress, [0, 0.5], [multiplier * 10, 0]);
-  
-  // 3. scale: Center image grows slightly larger
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, index === 5 ? 1.2 : 1.05]);
-  
   const zIndex = index === 5 ? 50 : 40 - Math.abs(multiplier);
 
   return (
@@ -31,7 +22,7 @@ const FanningCard = ({ img, index, scrollYProgress }) => {
         scale: scale,
         backgroundImage: `url(${img})` 
       }}
-      className="absolute inset-0 bg-cover bg-center rounded-xl md:rounded-2xl shadow-xl md:shadow-2xl border-2 md:border-4 border-white origin-bottom transition-shadow duration-500 hover:shadow-indigo-500/20"
+      className="absolute inset-0 bg-cover bg-center shadow-[0_25px_50px_rgba(0,0,0,0.25)] border-2 md:border-4 border-white origin-bottom transition-shadow duration-500"
     />
   );
 };
@@ -39,7 +30,7 @@ const FanningCard = ({ img, index, scrollYProgress }) => {
 export default function Hero() {
   const [activeTab, setActiveTab] = useState("Job Seeker");
   const [isFocused, setIsFocused] = useState(false);
-  const navigate = useNavigate(); // 2. Initialize navigate
+  const navigate = useNavigate();
 
   const galleryRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -47,42 +38,39 @@ export default function Hero() {
     offset: ["start end", "end start"]
   });
 
-  // Button Animation: Fades in as expansion completes
   const btnOpacity = useTransform(scrollYProgress, [0.4, 0.6], [0, 1]);
-  const btnY = useTransform(scrollYProgress, [0.4, 0.6], [20, 0]);
+  const btnY = useTransform(scrollYProgress, [0.4, 0.6], [30, 0]);
 
   const navigationTabs = ["Job Seeker", "Ausbildung", "Study Abroad"];
-
   const relatedData = {
     "Job Seeker": ["Remote Jobs", "Tech Careers", "Part-time", "Work Permits"],
     "Ausbildung": ["Nursing", "IT Specialist", "Mechatronics", "Hospitality"],
     "Study Abroad": ["Scholarships", "Germany", "USA", "Visa Process"],
   };
 
-  // 3. New redirection handler
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-    
-    if (tab === "Job Seeker") {
-      navigate("/job-seeker"); 
-    } else if (tab === "Ausbildung") {
-      navigate("/aus-bildung"); // Redirects to your Ausbildung sectors page
-    } else if (tab === "Study Abroad") {
-      navigate("/study-abroad"); // Placeholder for your future study abroad page
-    }
+    if (tab === "Job Seeker") navigate("/job-seeker");
+    else if (tab === "Ausbildung") navigate("/aus-bildung");
+    else navigate("/study-abroad");
   };
 
   const partners = [
     { name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" },
     { name: "IBM", logo: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" },
     { name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" },
-    { name: "University of Illinois", logo: "https://upload.wikimedia.org/wikipedia/commons/4/4e/University_of_Illinois_at_Urbana-Champaign_wordmark.svg" },
     { name: "OpenAI", logo: "https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg" },
     { name: "Anthropic", logo: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Anthropic_logo.svg" },
-    { name: "DeepLearning.AI", logo: "https://upload.wikimedia.org/wikipedia/commons/e/e0/DeepLearning.AI_Logo.png" },
-    { name: "Stanford University", logo: "https://upload.wikimedia.org/wikipedia/commons/b/b5/Stanford_University_logo.svg" },
-    { name: "University of Pennsylvania", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/UPenn_shield_with_name.svg/512px-UPenn_shield_with_name.svg.png" },
-    { name: "University of Michigan", logo: "https://upload.wikimedia.org/wikipedia/commons/9/93/University_of_Michigan_Logo.svg" },
+    { name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" },
+    { name: "IBM", logo: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" },
+    { name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" },
+    { name: "OpenAI", logo: "https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg" },
+    { name: "Anthropic", logo: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Anthropic_logo.svg" },
+    { name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" },
+    { name: "IBM", logo: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" },
+    { name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" },
+    { name: "OpenAI", logo: "https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg" },
+    { name: "Anthropic", logo: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Anthropic_logo.svg" },
   ];
 
   const galleryImages = [
@@ -100,16 +88,22 @@ export default function Hero() {
   ];
 
   return (
-    <section className="pt-8 md:pt-20 pb-20 md:pb-40 bg-[#d3d7e3] font-sans overflow-hidden">
-      <style dangerouslySetInnerHTML={{ __html: `.no-scrollbar::-webkit-scrollbar { display: none; }` }} />
+    <section className="relative font-sans overflow-hidden bg-[#d3d7e3] md:bg-white transition-colors duration-500">
+      {/* Font imports and scrollbar hide */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap');
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+      ` }} />
 
-      {/* Main Container increased to 1440px */}
-      <div className="max-w-[1440px] mx-auto px-4 md:px-10">
+      {/* TOP HALF COLOR: Only visible as a 'split' on desktop */}
+      <div className="hidden md:block absolute top-0 left-0 w-full h-[600px] bg-[#d3d7e3] z-0" />
+
+      <div className="max-w-[1440px] mx-auto px-4 md:px-10 relative z-10">
         
         {/* HERO HEADER */}
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10 md:mb-16">
-          <h1 className="text-4xl md:text-7xl font-bold text-gray-900 tracking-tight mb-4 md:mb-5">
-            altus <span className="text-indigo-600 font-medium">marketplace</span>
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="pt-8 md:pt-20 text-center mb-10 md:mb-16">
+          <h1 className="text-4xl md:text-7xl font-black text-gray-900 tracking-tight mb-4 md:mb-5 leading-[1.05]" style={{ fontFamily: "'Poppins', sans-serif" }}>
+            altus <span className="text-indigo-600 font-bold">marketplace</span>
           </h1>
           <p className="text-lg md:text-2xl text-gray-500 max-w-3xl mx-auto font-medium leading-relaxed px-2">
             Your gateway to global careers. Connect with verified service providers and world-class talent.
@@ -118,34 +112,25 @@ export default function Hero() {
 
         {/* SEARCH SECTION */}
         <div className="max-w-4xl mx-auto mb-12 md:mb-24">
-          {/* Tabs Header */}
-          <div className="flex gap-4 md:gap-10 mb-8 justify-start md:justify-center border-b border-gray-200 overflow-x-auto no-scrollbar px-4 md:px-0">
+          <div className="flex gap-4 md:gap-10 mb-8 justify-start md:justify-center border-b border-gray-300/50 overflow-x-auto no-scrollbar px-4 md:px-0">
             {navigationTabs.map((tab) => (
-              <button 
-                key={tab} 
-                onClick={() => handleTabClick(tab)} 
-                className="relative pb-4 text-[12px] md:text-sm font-bold uppercase tracking-wider transition-all whitespace-nowrap"
-              >
-                <span className={activeTab === tab ? "text-indigo-600" : "text-gray-400"}>{tab}</span>
+              <button key={tab} onClick={() => handleTabClick(tab)} className="relative pb-4 text-[12px] md:text-sm font-bold uppercase tracking-wider transition-all whitespace-nowrap">
+                <span className={activeTab === tab ? "text-indigo-600" : "text-gray-500"}>{tab}</span>
                 {activeTab === tab && <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600" />}
               </button>
             ))}
           </div>
 
-          {/* Search Input Container */}
           <div className="max-w-4xl mx-auto px-4 md:px-0">
-            <label className="block text-sm font-bold text-gray-900 mb-2">Search</label>
-            <div className={`relative flex items-center bg-white border transition-all duration-200 ${isFocused ? "border-gray-900 ring-0 shadow-lg" : "border-gray-300"}`}>
+            <label className="block text-sm font-bold text-gray-900 mb-2 uppercase tracking-wide">Search</label>
+            <div className={`relative flex items-center bg-white border transition-all duration-200 rounded-none ${isFocused ? "border-gray-900 shadow-xl" : "border-gray-300"}`}>
               <input 
                 type="text" 
                 onFocus={() => setIsFocused(true)} 
                 onBlur={() => setIsFocused(false)} 
-                placeholder="" 
-                className="w-full px-4 py-3 outline-none text-gray-800 bg-transparent text-base md:text-lg font-normal" 
+                className="w-full px-4 py-4 outline-none text-gray-800 bg-transparent text-base md:text-lg font-normal" 
               />
-              <div className="pr-4 text-gray-900">
-                <Search size={20} strokeWidth={1.5} />
-              </div>
+              <div className="pr-4 text-gray-900"><Search size={20} strokeWidth={1.5} /></div>
             </div>
           </div>
 
@@ -153,7 +138,10 @@ export default function Hero() {
             <AnimatePresence mode="wait">
               <motion.div key={activeTab} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-wrap gap-2 justify-center">
                 {relatedData[activeTab].map((item) => (
-                  <button key={item} className="text-[10px] md:text-xs px-3 md:px-5 py-1.5 md:py-2 bg-white border border-gray-200 text-gray-600 font-semibold rounded-full hover:border-indigo-300 hover:text-indigo-600 transition-all shadow-sm">
+                  <button 
+                    key={item} 
+                    className="text-[10px] md:text-xs px-5 py-2 bg-white border border-gray-200 text-gray-600 font-bold rounded-full hover:border-indigo-300 hover:text-indigo-600 transition-all shadow-sm hover:shadow-md"
+                  >
                     {item}
                   </button>
                 ))}
@@ -162,63 +150,53 @@ export default function Hero() {
           </div>
         </div>
 
-       {/* PARTNER SECTION */}
-<div className="mb-16 md:mb-24 px-4">
-  <p className="text-center text-[10px] md:text-[11px] uppercase tracking-[0.3em] font-black text-gray-600 mb-8 md:mb-10">
-    Trusted by Global Institutions
-  </p>
-  
-  <div className="relative max-w-full overflow-hidden">
-    
-    {/* --- CORNER FADES --- */}
-    {/* Left Fade */}
-    <div className="absolute inset-y-0 left-0 w-16 md:w-32 bg-gradient-to-r from-[#d3d7e3] to-transparent z-10 pointer-events-none" />
-    
-    {/* Right Fade */}
-    <div className="absolute inset-y-0 right-0 w-16 md:w-32 bg-gradient-to-l from-[#d3d7e3] to-transparent z-10 pointer-events-none" />
-    {/* ------------------- */}
-
-    <div className="flex items-center justify-start md:justify-center gap-3 md:gap-4 overflow-x-auto no-scrollbar pb-4 scroll-smooth px-4 md:px-10">
-      {partners.map((p, i) => (
-        <div 
-          key={i} 
-          className="flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-3 bg-white border border-gray-100 shadow-sm rounded-full transition-all hover:border-gray-200 hover:shadow-md cursor-pointer shrink-0"
-        >
-          <img src={p.logo} alt={p.name} className="h-4 md:h-6 w-auto object-contain" />
-          <span className="text-[10px] md:text-sm font-semibold text-gray-700 whitespace-nowrap">{p.name}</span>
+        {/* PARTNER SECTION */}
+        <div className="mb-16 md:mb-24 px-4">
+          <p className="text-center text-[10px] md:text-[11px] uppercase tracking-[0.3em] font-black text-gray-600 mb-8 md:mb-10">Trusted by Global Institutions</p>
+          <div className="relative max-w-full overflow-hidden">
+            {/* CORNER FADES: Matches Blue on mobile, White on desktop */}
+            <div className="absolute inset-y-0 left-0 w-16 md:w-32 bg-gradient-to-r from-[#d3d7e3] md:from-to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-16 md:w-32 bg-gradient-to-l from-[#d3d7e3] md:from-to-transparent z-10 pointer-events-none" />
+            
+            <div className="flex items-center justify-start md:justify-center gap-3 md:gap-4 overflow-x-auto no-scrollbar pb-6 scroll-smooth px-4 md:px-10">
+              {partners.map((p, i) => (
+                <div key={i} className="flex items-center gap-3 px-6 py-3 bg-white border border-gray-300 shadow-sm rounded-2xl shrink-0 transition-all hover:-translate-y-1 hover:shadow-md">
+                  <img src={p.logo} alt={p.name} className="h-4 md:h-5 w-auto object-contain" />
+                  <span className="text-[10px] md:text-xs font-bold text-gray-700 whitespace-nowrap uppercase tracking-tighter">{p.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      ))}
-    </div>
-  </div>
-</div>
 
-        {/* EXPANDING 11-IMAGE STACK - COMPACT HEIGHT */}
-        <div ref={galleryRef} className="mt-10 py-10 relative min-h-[400px] md:min-h-[500px] flex flex-col items-center">
+        {/* GALLERY SECTION */}
+        <div ref={galleryRef} className="pb-20 md:pb-40 relative min-h-[500px] md:min-h-[700px] flex flex-col items-center">
           <div className="text-center mb-10 px-4">
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 tracking-tight leading-tight">Our Global Community</h2>
+            <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight leading-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              Our Global Community
+            </h2>
           </div>
 
-          <div className="sticky top-40 h-[280px] md:h-[350px] flex justify-center items-center z-20 pointer-events-none w-full">
+          <div className="sticky top-40 h-[280px] md:h-[400px] flex justify-center items-center z-20 pointer-events-none w-full">
             <div className="relative w-40 h-56 md:w-64 md:h-80">
               {galleryImages.map((img, index) => (
-                <FanningCard 
-                  key={index} 
-                  img={img} 
-                  index={index} 
-                  scrollYProgress={scrollYProgress} 
-                />
+                <FanningCard key={index} img={img} index={index} scrollYProgress={scrollYProgress} />
               ))}
             </div>
           </div>
 
-          {/* BOTTOM CTA BUTTON */}
+          {/* DUAL BUTTON CTA */}
           <motion.div 
             style={{ opacity: btnOpacity, y: btnY }}
-            className="mt-16 md:mt-20 relative z-30"
+            className="mt-28 md:mt-36 relative z-30 flex flex-col sm:flex-row items-center gap-4"
           >
-            <button className="group px-6 md:px-10 py-3 md:py-4 bg-[#051a49] text-white rounded-full font-bold text-base md:text-lg flex items-center gap-3 shadow-xl hover:bg-indigo-600 transition-all active:scale-95">
-              Explore Our Network
-              <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
+            <button className="group h-[54px] px-10 bg-[#0061ff] text-white font-bold text-[15px] flex items-center justify-center gap-3 border border-[#0061ff] rounded-none shadow-xl hover:bg-blue-700 transition-all active:scale-95">
+              Explore the offers
+              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            </button>
+            <button className="group h-[54px] px-10 bg-white text-[#0061ff] font-bold text-[15px] flex items-center justify-center gap-3 border border-[#0061ff] rounded-none shadow-lg hover:bg-blue-50 transition-all active:scale-95">
+              View all products
+              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </motion.div>
         </div>

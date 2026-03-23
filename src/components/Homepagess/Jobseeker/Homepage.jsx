@@ -1,187 +1,183 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom"; // 1. Added for redirection
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
-  ChevronRight, Star, ArrowRightLeft, CheckCircle2, ChevronDown,Loader2
+  ChevronRight, Star, ArrowRightLeft, CheckCircle2, ChevronDown, X, Search, Loader2
 } from "lucide-react";
 
 // --- REUSABLE PROVIDER CARD ---
 const ProviderCard = ({ provider }) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
+    initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
     whileHover={{ y: -4 }}
-    className="bg-white border border-slate-200 rounded-lg p-5 shadow-sm hover:shadow-md transition-all group flex flex-col h-full"
+    className="bg-white border border-slate-200 rounded-md p-5 shadow-sm hover:shadow-md transition-all group flex flex-col h-full relative"
   >
     <div className="flex items-start gap-4 mb-4">
-      <div className="w-12 h-12 bg-slate-50 rounded border border-slate-100 flex-shrink-0 flex items-center justify-center p-1">
-        <div className={`w-full h-full rounded ${provider.color || 'bg-slate-200'} flex items-center justify-center text-[10px] font-bold text-white uppercase`}>
-          {provider.name.substring(0, 2)}
-        </div>
+      <div className="w-12 h-12 bg-white rounded border border-slate-100 flex-shrink-0 flex items-center justify-center p-2 shadow-sm">
+        <img src={provider.logo || "https://cdn-icons-png.flaticon.com/512/3233/3233827.png"} alt="logo" className="w-full h-full object-contain" />
       </div>
-      <div>
-        <h3 className="font-bold text-[15px] text-slate-900 group-hover:text-blue-600 transition-colors flex items-center gap-1.5">
+      <div className="flex-1">
+        <h3 className="font-bold text-[15px] text-slate-900 flex items-center gap-1.5 group-hover:text-blue-600 transition-colors">
           {provider.name}
-          <div className="w-3.5 h-3.5 bg-blue-500 rounded-full flex items-center justify-center">
-            <CheckCircle2 size={10} className="text-white" />
-          </div>
+          <CheckCircle2 size={12} className="text-blue-500 fill-blue-500/10" />
         </h3>
       </div>
     </div>
 
-    <p className="text-[13px] text-slate-500 leading-relaxed mb-6 line-clamp-3 flex-grow">
+    <p className="text-[13px] text-slate-600 leading-relaxed mb-6 line-clamp-3 flex-grow">
       {provider.description}
     </p>
 
     <div className="flex items-center justify-between pt-4 border-t border-slate-50 mt-auto">
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <Star size={14} className="text-yellow-400 fill-yellow-400" />
-        <span className="text-sm font-bold text-slate-900">{provider.rating}</span>
-        <span className="text-xs text-slate-400">({provider.reviews})</span>
+        <span className="text-[13px] font-bold text-slate-900">{provider.rating}</span>
+        <span className="text-[12px] text-slate-400">({provider.reviews})</span>
       </div>
-      <button className="text-slate-300 hover:text-blue-600 transition-colors">
-        <ArrowRightLeft size={16} />
-      </button>
+      <div className="flex items-center gap-3">
+         <button className="text-[11px] font-bold text-slate-500 hover:text-blue-600 uppercase tracking-wider">Save</button>
+         <ArrowRightLeft size={16} className="text-slate-300 cursor-pointer hover:text-blue-600" />
+      </div>
     </div>
   </motion.div>
 );
 
 export default function ServiceMarketplace() {
-  const navigate = useNavigate(); // Initialize navigation
+  const navigate = useNavigate();
   const [visibleItems, setVisibleItems] = useState(15);
   const [isLoading, setIsLoading] = useState(false);
   const [openCategory, setOpenCategory] = useState("Company establishment");
 
-  // Generate 30 total providers to demonstrate "Next 15"
-  const allProviders = Array.from({ length: 30 }).map((_, i) => ({
+  // Data generation
+  const allProviders = Array.from({ length: 47 }).map((_, i) => ({
     id: i + 1,
-    name: ["Xolo", "E-Residency Hub", "Magrat", "GrouHub", "1Office", "Dalanta", "estx", "TuneUp", "Unicount", "B2baltics", "Enty.io", "Nordic Consult", "Silva Hunt", "Gate to Baltics", "Sunny Business", "Alpha Corp", "Beta Services", "Nexus Legal", "Cloud Tax", "Euro Link", "Baltic Path", "Global Node", "Swift Form", "Smart Biz", "E-Flow", "Unity Hub", "Peak Accounting", "Core Services", "Venture Est", "Zenith"][i] || `Provider ${i + 1}`,
-    rating: (4.5 + Math.random() * 0.5).toFixed(1),
-    reviews: Math.floor(Math.random() * 300 + 20),
-    color: ["bg-orange-400", "bg-blue-400", "bg-indigo-400", "bg-emerald-400", "bg-slate-800", "bg-red-400", "bg-teal-400", "bg-purple-400"][i % 8],
-    description: "Professional services providing full compliance, legal address, and digital accounting for global entrepreneurs looking to scale in Europe."
+    name: ["E-Residency Hub", "Xolo", "Magrat", "e-resident.store", "GrouHub", "1Office Estonia", "estx", "Dalanta", "TuneUp OÜ", "Unicount", "Enty.io", "B2baltics Consulting", "GTPartner.ORG", "Nordic Consult", "Expat Legal"][i % 15],
+    rating: (4.3 + Math.random() * 0.7).toFixed(1),
+    reviews: Math.floor(Math.random() * 200 + 30),
+    description: "Special offer: 2 months free with our Pro plan. We help solopreneurs run borderless EU companies with ease and full compliance."
   }));
 
   const handleNextPage = () => {
-    if (visibleItems < allProviders.length) {
-      setIsLoading(true);
-      setTimeout(() => {
-        setVisibleItems(prev => prev + 15);
-        setIsLoading(false);
-        window.scrollTo({ top: 400, behavior: 'smooth' });
-      }, 800);
-    }
+    setIsLoading(true);
+    // Simulate API delay
+    setTimeout(() => {
+      setVisibleItems(prev => prev + 15);
+      setIsLoading(false);
+    }, 600);
   };
 
-  const sidebarCategories = [
-    { 
-      name: "Company establishment", 
-      options: ["Company formation (including state fee)", "Legal address & contact person", "e-Residency assistance"],
-      selected: "Legal address & contact person"
-    },
-    { name: "Business banking", options: ["Online banking", "Traditional banks", "Fintech solutions"] },
-    { name: "Tax & accounting", options: ["Monthly bookkeeping", "Annual reports", "Tax consulting"] },
-    { name: "Administration & e-services", options: ["Virtual office", "Mail forwarding", "Digital signature"] },
-    { name: "HR & relocation", options: ["Recruitment", "Work permits", "Relocation packages"] },
-    { name: "Insurance", options: ["Business insurance", "Health insurance"] },
-  ];
-
   return (
-    <div className="bg-[#f8f9fc] font-sans text-slate-900 antialiased min-h-screen">
-      <main className="max-w-[1400px] mx-auto px-6 py-8">
+    <div className="bg-white font-sans text-slate-900 antialiased min-h-screen">
+      <main className="max-w-[1440px] mx-auto px-6 py-8">
         
-        {/* HEADER SECTION */}
-        <div className="mb-8">
-          {/* 2. Main Page Redirection */}
-          <button 
-            onClick={() => navigate("/")} 
-            className="text-blue-600 text-[13px] font-semibold flex items-center gap-1 mb-6 hover:underline group"
-          >
-            <ChevronRight size={14} className="rotate-180 group-hover:-translate-x-1 transition-transform" /> 
-            Main page
-          </button>
-          <h1 className="text-[32px] font-bold text-slate-900 mb-2 tracking-tight">All Services and Providers</h1>
-          <p className="text-slate-500 text-sm max-w-2xl">
-            Explore the broad range of services on offer or connect with skilled providers to discuss your specific needs.
-          </p>
+        <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-12">
+          <div className="flex-1">
+            <button onClick={() => navigate("/")} className="text-blue-600 text-[13px] font-semibold flex items-center gap-1 mb-6 hover:underline group">
+              <ChevronRight size={14} className="rotate-180" /> Main page
+            </button>
+            <h1 className="text-[36px] font-bold text-[#002b5c] mb-2 tracking-tight leading-tight">All Services and Providers</h1>
+            <p className="text-slate-500 text-[15px] max-w-2xl leading-relaxed font-medium">
+              Explore the broad range of services on offer or connect with skilled providers to discuss your specific needs.
+            </p>
+          </div>
+
+          <div className="w-full md:w-[400px]">
+            <label className="block text-[13px] font-bold text-slate-800 mb-2">Search</label>
+            <div className="relative flex items-center">
+              <input 
+                type="text" 
+                placeholder="" 
+                className="w-full border border-slate-300 rounded-md px-4 py-2.5 outline-none focus:border-blue-500 shadow-sm"
+              />
+              <Search size={18} className="absolute right-4 text-slate-400" />
+            </div>
+          </div>
         </div>
 
-        {/* TOP FILTER BAR */}
-        <div className="flex flex-wrap items-center gap-3 mb-8 border-b border-slate-200 pb-8">
-          <button className="bg-blue-600 text-white px-5 py-2.5 rounded-full text-[13px] font-bold flex items-center gap-2">Providers {allProviders.length}</button>
-          <button className="bg-white border border-slate-200 text-blue-600 px-5 py-2.5 rounded-full text-[13px] font-bold">Packages 63</button>
-          <div className="h-6 w-px bg-slate-300 mx-2" />
+        {/* BLUE FILTER TABS */}
+        <div className="flex flex-wrap items-center gap-3 mb-10 border-b border-slate-100 pb-10">
+          <button className="bg-blue-600 text-white px-6 py-2.5 rounded-full text-[13px] font-bold">Providers 47</button>
+          <button className="bg-blue-50 text-blue-600 px-6 py-2.5 rounded-full text-[13px] font-bold">Packages 70</button>
+          <div className="h-6 w-px bg-slate-200 mx-2" />
           {["My company type", "My target industry", "My preferred language"].map(filter => (
-            <button key={filter} className="bg-white border border-slate-200 px-4 py-2.5 rounded-full text-[13px] font-semibold text-slate-600 flex items-center gap-2 hover:border-slate-400 transition-colors">
-              {filter} <ChevronDown size={14} className="text-slate-400" />
+            <button key={filter} className="bg-blue-50 border border-transparent px-5 py-2.5 rounded-full text-[13px] font-bold text-blue-600 flex items-center gap-2">
+              {filter} <ChevronDown size={14} />
             </button>
           ))}
+          <div className="ml-auto flex items-center gap-2 bg-blue-50 border border-transparent px-5 py-2.5 rounded-full text-[13px] font-bold text-blue-600">
+             Sort by: Rating count <ChevronDown size={14} />
+          </div>
         </div>
 
-        <div className="flex gap-10">
+        <div className="flex gap-12">
           {/* SIDEBAR */}
-          <aside className="w-64 shrink-0 hidden lg:block">
-            <div className="sticky top-24">
-              <h4 className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-6">Filters</h4>
-              <div className="space-y-0 border-t border-slate-200">
-                {sidebarCategories.map((cat, i) => (
-                  <div key={i} className="border-b border-slate-200">
-                    <button 
-                      onClick={() => setOpenCategory(openCategory === cat.name ? null : cat.name)}
-                      className="w-full flex items-center justify-between py-4 text-[14px] font-bold text-slate-800 hover:text-blue-600 transition-colors"
-                    >
-                      <span>{cat.name}</span>
-                      <ChevronDown size={16} className={`transition-transform duration-300 ${openCategory === cat.name ? 'rotate-180' : ''}`} />
-                    </button>
-                    <AnimatePresence>
-                      {openCategory === cat.name && (
-                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pb-4">
-                          {cat.options.map(opt => (
-                            <label key={opt} className="flex items-start gap-3 py-1.5 cursor-pointer group">
-                              <div className={`mt-0.5 w-4 h-4 border rounded flex items-center justify-center ${cat.selected === opt ? 'bg-blue-600 border-blue-600' : 'bg-white border-slate-300'}`}>
-                                {cat.selected === opt && <div className="w-1.5 h-1.5 bg-white rounded-sm" />}
-                              </div>
-                              <span className={`text-[13px] ${cat.selected === opt ? 'text-slate-900 font-semibold' : 'text-slate-500'}`}>{opt}</span>
-                            </label>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                ))}
-              </div>
+          <aside className="w-[280px] shrink-0 hidden lg:block">
+            <h4 className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-6">Filters</h4>
+            <div className="border-t border-slate-100">
+              {["Company establishment", "Business banking", "Tax & accounting", "HR & relocation"].map((cat, i) => (
+                <div key={i} className="border-b border-slate-100">
+                  <button 
+                    onClick={() => setOpenCategory(openCategory === cat ? null : cat)}
+                    className="w-full flex items-center justify-between py-4 text-[14px] font-bold text-slate-800"
+                  >
+                    <span>{cat}</span>
+                    <ChevronDown size={16} className={openCategory === cat ? 'rotate-180' : ''} />
+                  </button>
+                  {openCategory === cat && i === 0 && (
+                    <div className="pb-4 space-y-3 pl-1">
+                       <button className="text-[12px] text-blue-600 font-bold hover:underline">Clear selection</button>
+                       <label className="flex items-center gap-3 cursor-pointer">
+                          <input type="checkbox" className="w-4 h-4 accent-blue-600" />
+                          <span className="text-[13px] text-slate-600">Estonian company formation</span>
+                       </label>
+                       <label className="flex items-center gap-3 cursor-pointer">
+                          <input type="checkbox" checked className="w-4 h-4 accent-blue-600" />
+                          <span className="text-[13px] text-blue-600 font-bold">Legal address & contact person</span>
+                       </label>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </aside>
 
           {/* GRID AREA */}
           <div className="flex-1">
-            <div className="flex items-center justify-between mb-6">
-               <div className="text-[13px] font-semibold text-slate-500">
-                  Showing {visibleItems} of {allProviders.length} results
+            <div className="flex items-center justify-between mb-8">
+               <div className="text-[13px] font-bold text-slate-500">
+                  {allProviders.length} results <span className="bg-slate-100 px-3 py-1.5 rounded-full ml-2 text-slate-700">legal address & contact person <X size={12} className="inline ml-1 cursor-pointer" /></span>
                </div>
+               <button className="text-[13px] font-bold text-slate-800 underline">clear all filters</button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {allProviders.slice(0, visibleItems).map(provider => (
                 <ProviderCard key={provider.id} provider={provider} />
               ))}
             </div>
 
-            {/* 3. PAGINATION / LOAD MORE LOGIC */}
-            <div className="mt-12 flex flex-col items-center gap-6 border-t border-slate-100 pt-10">
-               {visibleItems < allProviders.length ? (
-                 <button 
-                  onClick={handleNextPage}
-                  disabled={isLoading}
-                  className="bg-slate-900 text-white px-10 py-3 rounded-lg font-bold text-[14px] flex items-center gap-3 hover:bg-blue-600 transition-all active:scale-95 disabled:opacity-50"
-                 >
-                   {isLoading ? <Loader2 size={18} className="animate-spin" /> : ""}
-                   {!isLoading && <ChevronRight size={18} />}
-                 </button>
-               ) : (
-                 <p className="text-slate-400 font-bold text-sm italic">You've reached the end of the list.</p>
-               )}
-             
+            {/* PAGINATION */}
+            <div className="mt-16 pt-10 border-t border-slate-100 flex flex-col items-center gap-8">
+               <div className="flex items-center gap-3 text-[13px] font-bold text-slate-400">
+                  <button className="hover:text-blue-600 flex items-center gap-1"><ChevronRight size={16} className="rotate-180"/> Previous</button>
+                  <div className="flex gap-1 mx-4">
+                     <span className="w-8 h-8 flex items-center justify-center bg-slate-900 text-white rounded font-bold">1</span>
+                     <span className="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded cursor-pointer">2</span>
+                     <span className="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded cursor-pointer">3</span>
+                  </div>
+                  <button 
+                    onClick={handleNextPage} 
+                    disabled={isLoading}
+                    className="text-slate-800 hover:text-blue-600 flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? (
+                      <Loader2 size={16} className="animate-spin text-blue-600" />
+                    ) : (
+                      <>Next <ChevronRight size={16}/></>
+                    )}
+                  </button>
+               </div>
             </div>
           </div>
         </div>
