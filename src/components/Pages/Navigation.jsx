@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDown, Menu, X, ArrowRight } from "lucide-react";
+import { ChevronDown, Menu, X,Search, Globe, User, MessageSquare } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
@@ -12,165 +12,125 @@ export default function Navbar() {
   const megaMenuData = [
     {
       category: "Ausbildung",
-      title: "Vocational Training in Germany",
-      links: [
-        "Nursing (Pflegefachmann)", "IT Specialist", "Mechatronics", 
-        "Automotive Technician", "Hospitality & Hotel Management", 
-        "Logistics & Supply Chain", "Social Work & Education", 
-        "Construction & Trades", "Electronics Engineer", "Chef & Culinary Arts"
-      ]
+      title: "Vocational Training",
+      links: ["Nursing", "IT Specialist", "Mechatronics", "Automotive", "Hospitality", "Logistics", "Social Work"]
     },
     {
       category: "Job Seekers",
-      title: "Professional Careers & Placements",
-      links: [
-        "Software Engineering", "Frontend Developers", "Backend Developers", 
-        "Healthcare Professionals", "Civil Engineering", "Mechanical Engineering", 
-        "Digital Marketing", "Project Management", "Data Science", "Finance & Accounting"
-      ]
+      title: "Professional Careers",
+      links: ["Software Engineering", "Healthcare", "Engineering", "Digital Marketing", "Management", "Data Science"]
     },
     {
       category: "Study Abroad",
-      title: "International University Programs",
-      links: [
-        "Masters in Germany", "Bachelors Programs", "MBA Opportunities", 
-        "Language Courses (A1-C1)", "Visa Assistance", "Scholarship Guidance", 
-        "Student Accommodation", "Block Account Support"
-      ]
+      title: "University Programs",
+      links: ["Masters", "Bachelors", "MBA", "Language Courses", "Visa Assistance", "Housing"]
     }
   ];
 
   const activeContent = megaMenuData.find(item => item.category === selectedCategory);
 
   return (
-    <header className="w-full bg-white sticky top-0 z-[100] border-b border-gray-100" style={{ fontFamily: "'Inter', sans-serif" }}>
-      {/* Import Inter and Poppins from Google Fonts */}
+    <header className="w-full bg-white border-b border-gray-200 sticky top-0 z-[100]" style={{ fontFamily: "'Inter', sans-serif" }}>
+      {/* Import Inter and Poppins */}
       <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600&display=swap');
       ` }} />
 
-      <div className="max-w-[1440px] mx-auto flex items-center justify-between px-6 py-0 h-16">
+      <div className="max-w-[1440px] mx-auto flex items-center h-14 px-4 md:px-8">
         
-        {/* LEFT: LOGO & NAV */}
-        <div className="flex items-center h-full">
-          <div onClick={() => navigate("/")} className="flex items-center gap-2 cursor-pointer mr-10 group">
-            <div className="flex items-center gap-1.5">
-               <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white font-bold">A</div>
-               {/* Branding Font: Poppins */}
-               <span className="text-xl font-bold tracking-tighter text-slate-900 uppercase" style={{ fontFamily: "'Poppins', sans-serif" }}>
-                Altus<span className="text-blue-600">.</span>
-               </span>
-            </div>
+        {/* LEFT: IBM STYLE LOGO */}
+        <div onClick={() => navigate("/")} className="flex items-center gap-4 cursor-pointer mr-6">
+          <div className="flex flex-col gap-[2px]">
+            <div className="w-10 h-[3px] bg-slate-900" />
+            <div className="w-10 h-[3px] bg-slate-900" />
+            <div className="w-10 h-[3px] bg-slate-900" />
+            <div className="w-10 h-[3px] bg-slate-900" />
           </div>
+          <span className="text-[10px] text-slate-400 font-bold vertical-line pl-4 border-l border-slate-200 uppercase tracking-widest hidden md:block">
+            Altus Career
+          </span>
+        </div>
 
-          <nav className="hidden lg:flex items-center h-full">
-            {["Hire Talent", "Resources", "Providers", "About Us"].map((item, idx) => (
-              <div 
-                key={item} 
-                className="h-full relative flex items-center px-4 cursor-pointer group"
-                onMouseEnter={() => item === "Hire Talent" && setActiveDropdown(item)}
-                onMouseLeave={() => setActiveDropdown(null)}
-              >
-                {/* Interface Font: Inter */}
-                <button className={`flex items-center gap-1 text-[13px] font-semibold transition-colors ${activeDropdown === item || (idx === 0 && !activeDropdown) ? "text-slate-900" : "text-slate-500 hover:text-slate-900"}`}>
-                  {item} {idx === 0 && <ChevronDown size={14} className="opacity-40" />}
-                </button>
+        {/* CENTER NAV: MINIMALIST */}
+        <nav className="hidden lg:flex items-center h-full gap-2">
+          {["Hire Talent", "Resources", "Providers", "About Us"].map((item, idx) => (
+            <div 
+              key={item} 
+              className="h-full relative flex items-center px-3 cursor-pointer group"
+              onMouseEnter={() => item === "Hire Talent" && setActiveDropdown(item)}
+              onMouseLeave={() => setActiveDropdown(null)}
+            >
+              <button className="flex items-center gap-1 text-[14px] text-slate-600 hover:text-slate-900 transition-colors">
+                {item} {idx === 0 && <ChevronDown size={14} className="mt-[2px]" />}
+              </button>
 
-                {/* Animated Blue Underline */}
-                {(idx === 0 || activeDropdown === item) && (
-                  <motion.div layoutId="navUnderline" className="absolute bottom-0 left-0 right-0 h-[2px] bg-blue-600" />
-                )}
-
-                {/* MEGA MENU CONTENT */}
-                <AnimatePresence>
-                  {item === "Hire Talent" && activeDropdown === item && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 0 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute left-[-200px] top-[100%] w-[850px] pt-0 shadow-2xl"
-                    >
-                      <div className="bg-white border-t border-slate-100 flex overflow-hidden min-h-[450px]">
-                        {/* Mega Menu Sidebar */}
-                        <div className="w-64 bg-slate-50 py-4">
-                          {megaMenuData.map((cat) => (
-                            <button
-                              key={cat.category}
-                              onMouseEnter={() => setSelectedCategory(cat.category)}
-                              className={`w-full text-left px-8 py-4 text-[14px] font-bold transition-all border-r-2 ${
-                                selectedCategory === cat.category 
-                                ? "bg-white text-slate-900 border-blue-600 shadow-[2px_0_10px_rgba(0,0,0,0.05)]" 
-                                : "text-slate-600 border-transparent hover:text-slate-900"
-                              }`}
-                            >
-                              {cat.category}
+              {/* MEGA MENU */}
+              <AnimatePresence>
+                {item === "Hire Talent" && activeDropdown === item && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 0 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute left-0 top-[100%] w-[600px] bg-white border border-gray-200 shadow-2xl p-6"
+                  >
+                    <div className="flex gap-10">
+                      <div className="w-1/3 flex flex-col gap-2">
+                        {megaMenuData.map((cat) => (
+                          <button
+                            key={cat.category}
+                            onMouseEnter={() => setSelectedCategory(cat.category)}
+                            className={`text-left text-[14px] py-1 border-b-2 transition-all ${
+                              selectedCategory === cat.category ? "border-blue-600 text-blue-600 font-semibold" : "border-transparent text-slate-500"
+                            }`}
+                          >
+                            {cat.category}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-[12px] uppercase font-bold text-slate-400 mb-4 tracking-widest">{activeContent.title}</h4>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                          {activeContent.links.map(link => (
+                            <button key={link} className="text-[13px] text-left text-slate-600 hover:text-blue-600">
+                              {link}
                             </button>
                           ))}
                         </div>
-
-                        {/* Mega Menu Links Grid */}
-                        <div className="flex-1 p-10 bg-white">
-                          <div className="flex items-center gap-2 mb-8 group/title cursor-pointer" onClick={() => navigate(`/${selectedCategory.toLowerCase().replace(" ", "-")}`)}>
-                             {/* Category Heading: Poppins */}
-                             <h4 className="text-blue-600 font-bold text-lg hover:underline" style={{ fontFamily: "'Poppins', sans-serif" }}>
-                              {activeContent.title}
-                             </h4>
-                             <ArrowRight size={16} className="text-blue-600" />
-                          </div>
-                          <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                            {activeContent.links.map(link => (
-                              <button 
-                                key={link} 
-                                className="text-[13px] text-left text-slate-500 hover:text-blue-600 font-medium transition-colors"
-                              >
-                                {link}
-                              </button>
-                            ))}
-                          </div>
-                          <button className="mt-10 text-blue-600 text-[13px] font-bold flex items-center gap-1 hover:underline">
-                             See all services <ArrowRight size={14} />
-                          </button>
-                        </div>
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
-          </nav>
-        </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </nav>
 
-        {/* RIGHT ACTIONS */}
-        <div className="flex items-center gap-6">
-          <button onClick={() => navigate("/login")} className="hidden sm:block text-[13px] font-bold text-slate-900 hover:text-blue-600 transition-colors">
-            Log In
-          </button>
-
-          <button className="bg-[#00d084] hover:bg-[#00b975] text-white px-6 py-2.5 rounded-sm text-[13px] font-extrabold transition-all tracking-tight shadow-md">
-            Join Now
-          </button>
-
-          {/* Mobile Menu Toggle */}
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 text-slate-900">
+        {/* RIGHT: UTILITY ICONS (Match IBM image) */}
+        <div className="ml-auto flex items-center gap-5 text-slate-600">
+          <Search size={20} className="cursor-pointer hover:text-slate-900" />
+          <MessageSquare size={20} className="cursor-pointer hover:text-slate-900 hidden sm:block" />
+          <Globe size={20} className="cursor-pointer hover:text-slate-900 hidden sm:block" />
+          <div className="h-5 w-[1px] bg-slate-200" />
+          <User size={20} className="cursor-pointer hover:text-slate-900" />
+          
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden">
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
-      
-      {/* Mobile Menu Drawer */}
+
+      {/* MOBILE DRAWER */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div 
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="lg:hidden bg-white border-b border-gray-100 overflow-hidden"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="lg:hidden bg-slate-50 border-t border-gray-100"
           >
-            <div className="px-6 py-4 space-y-4">
+            <div className="p-6 space-y-4">
               {megaMenuData.map(cat => (
-                <div key={cat.category} className="font-bold text-slate-900 border-b pb-2 cursor-pointer hover:text-blue-600">
-                  {cat.category}
-                </div>
+                <div key={cat.category} className="text-slate-900 font-medium">{cat.category}</div>
               ))}
             </div>
           </motion.div>
