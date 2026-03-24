@@ -1,43 +1,74 @@
-import React from "react";
-
+import React, { useState } from "react";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
+import { Menu, Users, Building2, Handshake, TrendingUp } from "lucide-react";
 
 export default function CategoryBanner() {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    if (latest > 100) {
+      setIsCollapsed(true);
+    } else {
+      setIsCollapsed(false);
+    }
+  });
+
   const categories = [
-    { id: "talent", label: "For Individuals" },
-    { id: "business", label: "For Businesses" },
-    { id: "universities", label: "For Universities" },
-    { id: "governments", label: "For Governments" },
+    { id: "employers", label: "Employers", icon: <Users size={14} /> },
+    { id: "institutions", label: "Institutions", icon: <Building2 size={14} /> },
+    { id: "agents", label: "Agents", icon: <Handshake size={14} /> },
+    { id: "investor", label: "Investor", icon: <TrendingUp size={14} /> },
   ];
 
   return (
-    <nav className="w-full bg-[#f4f7ff] border-b border-blue-100/50 relative z-50 py-2">
-      <div className="max-w-[1440px] mx-auto px-4 md:px-16 overflow-x-auto no-scrollbar">
-        <div className="flex items-center justify-start gap-2 h-12 min-w-max">
-          {categories.map((cat) => {
-            return (
-              <div
-                key={cat.id}
-                className="relative px-6 h-10 flex items-center group cursor-default"
-              >
-                {/* Text Layer - Static Style */}
-                <span
-                  className="relative z-10 text-[12px] lg:text-[13px] font-black whitespace-nowrap uppercase tracking-tighter text-slate-500 transition-colors duration-300 group-hover:text-slate-900"
-                >
+    /* Removed max-width constraints and reduced padding to move it to the absolute right edge */
+    <div className="hidden md:flex fixed top-24 right-0 z-[60] justify-end pointer-events-none px-2 left-0">
+      <motion.nav
+        initial={false}
+        animate={{
+          /* Compact widths */
+          width: isCollapsed ? "130px" : "620px",
+          height: isCollapsed ? "42px" : "48px",
+          borderRadius: "10px",
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="bg-white/90 backdrop-blur-xl border border-slate-200 shadow-[0_8px_30px_rgba(0,0,0,0.12)] pointer-events-auto flex items-center overflow-hidden relative"
+      >
+        {/* LARGE VIEW: FULL LABELS */}
+        <motion.div
+          animate={{ opacity: isCollapsed ? 0 : 1, x: isCollapsed ? 20 : 0 }}
+          className={`flex items-center justify-around w-full px-3 whitespace-nowrap ${isCollapsed ? 'pointer-events-none' : ''}`}
+        >
+          {categories.map((cat, idx) => (
+            <React.Fragment key={cat.id}>
+              <button className="flex items-center gap-1.5 group transition-all">
+                <span className="text-blue-600 opacity-60 group-hover:opacity-100 transition-opacity">
+                  {cat.icon}
+                </span>
+                <span className="text-[11px] font-bold text-slate-600 group-hover:text-blue-600 transition-colors uppercase tracking-wider">
                   {cat.label}
                 </span>
+              </button>
+              {idx !== categories.length - 1 && (
+                <div className="h-3 w-[1px] bg-slate-200 mx-1" />
+              )}
+            </React.Fragment>
+          ))}
+        </motion.div>
 
-                {/* Hover Blob - Keep for subtle visual feedback, or remove if total staticity is needed */}
-                <div className="absolute inset-0 bg-blue-100/40 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300 ease-out z-0" />
-              </div>
-            );
-          })}
-        </div>
-      </div>
+        {/* COLLAPSED VIEW */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isCollapsed ? 1 : 0, x: isCollapsed ? 0 : -20 }}
+          className="absolute inset-0 flex items-center justify-center gap-1.5 px-3 pointer-events-none"
+        >
+          <Menu size={14} className="text-blue-600" />
+          <span className="text-[11px] font-bold text-slate-800 uppercase tracking-tight">Partners</span>
+        </motion.div>
 
-      <style dangerouslySetInnerHTML={{ __html: `
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      `}} />
-    </nav>
+        <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-blue-50/20 to-white/0 pointer-events-none" />
+      </motion.nav>
+    </div>
   );
 }
