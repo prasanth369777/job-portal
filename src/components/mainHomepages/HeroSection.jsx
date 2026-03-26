@@ -33,7 +33,8 @@ const FanningCard = ({ img, index, name, role, scrollYProgress }) => {
         zIndex: zIndex,
         scale: scale,
       }}
-      className="absolute inset-0 rounded-[35px] bg-white border-[5px] border-white shadow-[0_20px_40px_rgba(0,0,0,0.15)] overflow-hidden pointer-events-auto"
+      // REMOVED CORNER RADIUS: changed rounded-[35px] to rounded-none
+      className="absolute inset-0 rounded-none bg-white border-[5px] border-white shadow-[0_20px_40px_rgba(0,0,0,0.15)] overflow-hidden pointer-events-auto"
     >
       <div 
         className="absolute inset-0 bg-cover bg-center"
@@ -56,7 +57,7 @@ const FanningCard = ({ img, index, name, role, scrollYProgress }) => {
             <span className="flex items-center gap-1"><Users size={12} /> 312</span>
             <span className="flex items-center gap-1"><ShieldCheck size={12} /> 48</span>
           </div>
-          <button className="bg-white text-black px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tight hover:bg-gray-100 transition-colors shadow-md">
+          <button className="bg-white text-black px-4 py-1.5 rounded-none text-[10px] font-black uppercase tracking-tight hover:bg-gray-100 transition-colors shadow-md">
             Follow +
           </button>
         </div>
@@ -104,11 +105,6 @@ export default function Hero() {
     { name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" },
     { name: "OpenAI", logo: "https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg" },
     { name: "Anthropic", logo: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Anthropic_logo.svg" },
-    { name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" },
-    { name: "IBM", logo: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" },
-    { name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" },
-    { name: "OpenAI", logo: "https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg" },
-    { name: "Anthropic", logo: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Anthropic_logo.svg" },
   ];
 
   const communityMembers = [
@@ -126,7 +122,7 @@ export default function Hero() {
   ];
 
   return (
-    <section className="relative font-sans overflow-hidden bg-[#d3d7e3] md:bg-white transition-colors duration-500">
+    <section className="relative font-sans overflow-hidden bg-[#d3d7e3] md:bg-white transition-colors duration-500 pb-0">
       <style dangerouslySetInnerHTML={{ __html: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap');
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -186,9 +182,9 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* PARTNER SECTION */}
+        {/* SECTION NAME: OUR GLOBAL COMMUNITY (Partner Logo Section) */}
         <div className="mb-16 md:mb-24 px-4">
-          <p className="text-center text-[10px] md:text-[11px] uppercase tracking-[0.3em] font-black text-gray-600 mb-8 md:mb-10">Trusted by Global Institutions</p>
+          <p className="text-center text-[10px] md:text-[11px] uppercase tracking-[0.3em] font-black text-gray-600 mb-8 md:mb-10">Our Global Community</p>
           <div className="relative max-w-full overflow-hidden">
             <div className="absolute inset-y-0 left-0 w-16 md:w-32 bg-gradient-to-r from-[#d3d7e3] md:from-white to-transparent z-10 pointer-events-none" />
             <div className="absolute inset-y-0 right-0 w-16 md:w-32 bg-gradient-to-l from-[#d3d7e3] md:from-white to-transparent z-10 pointer-events-none" />
@@ -204,15 +200,19 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* GALLERY SECTION */}
-        <div ref={galleryRef} className="pb-20 md:pb-12 relative min-h-[600px] md:min-h-[1000px] flex flex-col items-center">
-          <div className="text-center mb-2 px-4">
-            <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight leading-tight mt-16" style={{ fontFamily: "'Poppins', sans-serif" }}>
-              Our Global Community
+        {/* GALLERY SECTION: TRUSTED BY GLOBAL INSTITUTIONS */}
+        {/* min-h reduced from 1000px to 750px to shorten the scroll track */}
+        <div ref={galleryRef} className="pb-4 md:pb-2 relative min-h-[500px] md:min-h-[750px] flex flex-col items-center">
+          
+          {/* TITLE: Reduced mt-14 to mt-6 and mb-10 to mb-0 */}
+          <div className="text-center mb-0 px-4">
+            <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight leading-tight mt-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              Trusted by Global Institutions
             </h2>
           </div>
 
-          <div className="sticky top-32 h-[350px] md:h-[550px] flex justify-center items-center z-20 pointer-events-none w-full">
+          {/* CARDS CONTAINER: Changed top-40 to top-24 to pull cards much closer to the title */}
+          <div className="sticky top-24 h-[300px] md:h-[480px] flex justify-center items-center z-20 pointer-events-none w-full">
             <div className="relative w-40 h-72 md:w-64 md:h-96">
               {communityMembers.map((member, index) => (
                 <FanningCard 
@@ -227,15 +227,19 @@ export default function Hero() {
             </div>
           </div>
 
+          {/* BUTTONS: Changed mt-10 to a negative margin (-mt-12) to overlap/pull up to the cards */}
           <motion.div 
             style={{ opacity: btnOpacity, y: btnY }}
-            className="mt-12 md:mt-16 relative z-30 flex flex-col sm:flex-row items-center gap-4"
+            className="-mt-6 md:-mt-12 relative z-30 flex flex-col sm:flex-row items-center gap-4"
           >
-            <button className="group h-[54px] px-10 bg-[#003fa3] text-white font-bold text-[15px] flex items-center justify-center gap-3 border border-[#003fa3] rounded-full shadow-[0_8px_16px_rgba(0,0,0,0.15)] hover:bg-[#002b74] transition-all active:scale-95">
+            {/* Primary Button */}
+            <button className="group h-[54px] px-10 bg-[#003fa3] text-white font-bold text-[15px] flex items-center justify-center gap-3 border border-[#003fa3] rounded-none shadow-[0_8px_16px_rgba(0,0,0,0.15)] hover:bg-[#002b74] transition-all active:scale-95">
               Explore the offers
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </button>
-            <button className="group h-[54px] px-10 bg-white text-[#003fa3] font-bold text-[15px] flex items-center justify-center gap-3 border border-[#003fa3] rounded-full shadow-lg hover:bg-blue-50 transition-all active:scale-95">
+
+            {/* Secondary Button */}
+            <button className="group h-[54px] px-10 bg-white text-[#003fa3] font-bold text-[15px] flex items-center justify-center gap-3 border border-[#003fa3] rounded-none shadow-lg hover:bg-blue-50 transition-all active:scale-95">
               View all products
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </button>

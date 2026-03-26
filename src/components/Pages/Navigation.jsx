@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDown, Menu, X, Search, Globe } from "lucide-react";
+import { ChevronDown, Menu, X, Search, Globe, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
@@ -172,35 +172,47 @@ export default function Navbar() {
                   )}
                 </AnimatePresence>
             </div>
+
+            {/* USER PORTALS DROPDOWN */}
+            <div 
+              className="relative flex items-center gap-1.5 cursor-pointer hover:text-black transition-colors"
+              onMouseEnter={() => setActiveDropdown("UserPortals")}
+              onMouseLeave={() => setActiveDropdown(null)}
+            >
+                <User size={20} />
+                
+                <AnimatePresence>
+                  {activeDropdown === "UserPortals" && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute right-0 top-full w-48 bg-white border border-gray-200 shadow-xl py-2 z-[110]"
+                    >
+                      {megaMenuData.find(m => m.category === "Apply")?.links.map((link) => (
+                        <div 
+                          key={link} 
+                          className="px-4 py-2 text-[12px] font-bold hover:bg-slate-50 hover:text-blue-600 cursor-pointer text-slate-700"
+                        >
+                          {link}
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+            </div>
           </div>
           
           <div className="h-6 w-[1px] bg-gray-200 mx-1 hidden sm:block" />
 
-          {/* APPLY CTA */}
-          <div className="relative" onMouseEnter={() => setActiveDropdown("Apply")} onMouseLeave={() => setActiveDropdown(null)}>
+          {/* APPLY CTA (SUBTOPICS REMOVED) */}
+          <div className="relative">
             <button 
-              className="bg-black text-white px-6 py-2.5 text-[12px] font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-blue-700 transition-all shadow-md"
+              className="bg-black text-white px-8 py-2.5 text-[12px] font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-blue-700 transition-all shadow-md"
+              onClick={() => navigate("/apply")}
             >
               Apply
-              <ChevronDown size={14} />
             </button>
-
-            <AnimatePresence>
-                {activeDropdown === "Apply" && (
-                    <motion.div 
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute right-0 top-full w-52 bg-white border border-gray-200 shadow-2xl py-3 z-[110]"
-                    >
-                        {megaMenuData.find(m => m.category === "Apply").links.map(link => (
-                            <div key={link} className="px-5 py-2.5 text-gray-700 hover:bg-gray-50 hover:text-blue-600 text-left text-[13px] font-bold cursor-pointer">
-                                {link}
-                            </div>
-                        ))}
-                    </motion.div>
-                )}
-            </AnimatePresence>
           </div>
           
           {/* Mobile Menu Toggle */}

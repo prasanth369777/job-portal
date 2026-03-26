@@ -22,15 +22,14 @@ export default function CategoryBanner() {
   ];
 
   return (
-    /* Removed max-width constraints and reduced padding to move it to the absolute right edge */
-    <div className="hidden md:flex fixed top-24 right-0 z-[60] justify-end pointer-events-none px-2 left-0">
+    /* Increased px-0 to px-4 to move it a 'little bit left' from the edge */
+    <div className="hidden md:flex fixed top-24 right-0 z-[60] justify-end pointer-events-none px-4 left-0">
       <motion.nav
         initial={false}
         animate={{
-          /* Compact widths */
           width: isCollapsed ? "130px" : "620px",
           height: isCollapsed ? "42px" : "48px",
-          borderRadius: "10px",
+          borderRadius: "10px", // Restored rounded corners on all sides
         }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="bg-white/90 backdrop-blur-xl border border-slate-200 shadow-[0_8px_30px_rgba(0,0,0,0.12)] pointer-events-auto flex items-center overflow-hidden relative"
