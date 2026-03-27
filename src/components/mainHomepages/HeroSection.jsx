@@ -182,24 +182,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* SECTION NAME: OUR GLOBAL COMMUNITY (Partner Logo Section) */}
-        <div className="mb-16 md:mb-24 px-4">
-          <p className="text-center text-[10px] md:text-[11px] uppercase tracking-[0.3em] font-black text-gray-600 mb-8 md:mb-10">Our Global Community</p>
-          <div className="relative max-w-full overflow-hidden">
-            <div className="absolute inset-y-0 left-0 w-16 md:w-32 bg-gradient-to-r from-[#d3d7e3] md:from-white to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-16 md:w-32 bg-gradient-to-l from-[#d3d7e3] md:from-white to-transparent z-10 pointer-events-none" />
-            
-            <div className="flex items-center justify-start md:justify-center gap-3 md:gap-4 overflow-x-auto no-scrollbar pb-6 scroll-smooth px-4 md:px-10">
-              {partners.map((p, i) => (
-                <div key={i} className="flex items-center gap-3 px-6 py-3 bg-white border border-gray-300 shadow-[0_4px_8px_rgba(0,0,0,0.15)] rounded-2xl shrink-0 transition-all hover:-translate-y-1">
-                  <img src={p.logo} alt={p.name} className="h-4 md:h-5 w-auto object-contain" />
-                  <span className="text-[10px] md:text-xs font-bold text-gray-700 whitespace-nowrap uppercase tracking-tighter">{p.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
+        
         {/* GALLERY SECTION: TRUSTED BY GLOBAL INSTITUTIONS */}
         {/* min-h reduced from 1000px to 750px to shorten the scroll track */}
         <div ref={galleryRef} className="pb-4 md:pb-2 relative min-h-[500px] md:min-h-[750px] flex flex-col items-center">
@@ -227,10 +210,10 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* BUTTONS: Changed mt-10 to a negative margin (-mt-12) to overlap/pull up to the cards */}
+          
           <motion.div 
             style={{ opacity: btnOpacity, y: btnY }}
-            className="-mt-6 md:-mt-12 relative z-30 flex flex-col sm:flex-row items-center gap-4"
+            className="-mt-6 md:-mt-14 relative z-30 flex flex-col sm:flex-row items-center gap-4"
           >
             {/* Primary Button */}
             <button className="group h-[54px] px-10 bg-[#003fa3] text-white font-bold text-[15px] flex items-center justify-center gap-3 border border-[#003fa3] rounded-none shadow-[0_8px_16px_rgba(0,0,0,0.15)] hover:bg-[#002b74] transition-all active:scale-95">
@@ -243,8 +226,28 @@ export default function Hero() {
               View all products
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </button>
+            
           </motion.div>
+
         </div>
+        {/* SECTION NAME: OUR GLOBAL COMMUNITY (Partner Logo Section) */}
+        <div className="mb-16 md:mb-8 px-4">
+          <p className="text-center text-[10px] md:text-[11px] uppercase tracking-[0.3em] font-black text-gray-600 mb-8 md:mb-10">Our Global Community</p>
+          <div className="relative max-w-full overflow-hidden">
+            <div className="absolute inset-y-0 left-0 w-16 md:w-32 bg-gradient-to-r from-[#d3d7e3] md:from-white to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-16 md:w-32 bg-gradient-to-l from-[#d3d7e3] md:from-white to-transparent z-10 pointer-events-none" />
+            
+            <div className="flex items-center justify-start md:justify-center gap-3 md:gap-4 overflow-x-auto no-scrollbar pb-6 scroll-smooth px-4 md:px-10">
+              {partners.map((p, i) => (
+                <div key={i} className="flex items-center gap-3 px-6 py-3 bg-white border border-gray-300 shadow-[0_4px_8px_rgba(0,0,0,0.15)] rounded-2xl shrink-0 transition-all hover:-translate-y-1">
+                  <img src={p.logo} alt={p.name} className="h-4 md:h-5 w-auto object-contain" />
+                  <span className="text-[10px] md:text-xs font-bold text-gray-700 whitespace-nowrap uppercase tracking-tighter">{p.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   );
