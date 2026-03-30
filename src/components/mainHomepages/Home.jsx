@@ -8,6 +8,7 @@ import Worldclass from "./Worldclasstalent";
 import PopularSectors from "./Popularsector";
 import Buildamazing from "./Buildamazingteam";
 import Whyorg from "./Why Organizations";
+import LeadintheAI from "./LeadintheAI";
 import Alutspublications from "./AltusPublications";
 import Faq1 from "./FAQ1";
 import Footer from "../Pages/Footer";
@@ -65,6 +66,10 @@ export default function Home() {
       
        <ScrollSection>
         <Alutspublications />
+      </ScrollSection>
+
+       <ScrollSection>
+        <LeadintheAI />
       </ScrollSection>
 
 <ScrollSection>

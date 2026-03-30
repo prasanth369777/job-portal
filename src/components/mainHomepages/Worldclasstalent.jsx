@@ -46,13 +46,13 @@ export default function TalentGrid() {
 
   return (
     <section className="py-16 bg-white font-sans">
-      {/* Container width decreased from 1200px to 1000px */}
       <div className="max-w-[1000px] mx-auto px-6">
         
         {/* Header Section */}
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.7 }}
           className="text-center mb-12"
         >
@@ -70,21 +70,23 @@ export default function TalentGrid() {
           {talents.map((item, index) => (
             <div 
               key={index} 
-              className="p-8 border border-gray-100 hover:bg-indigo-600 transition-all duration-300 group cursor-pointer relative"
+              className="p-8 border border-gray-100 hover:bg-[#0000f0] transition-all duration-300 group cursor-pointer relative"
             >
               <div className="mb-4 flex items-center justify-between">
-                <div className="text-indigo-600 group-hover:text-white group-hover:scale-110 transition-all duration-300 origin-left">
+                <div className="text-[#0000f0] group-hover:text-white group-hover:scale-110 transition-all duration-300 origin-left">
                   {item.icon}
                 </div>
                 <ArrowRight className="text-gray-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-3 transition-all duration-500 text-white" size={18} />
               </div>
               
-              <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-white transition-colors duration-300">{item.title}</h3>
-              <p className="text-gray-500 text-xs md:text-sm leading-relaxed font-medium group-hover:text-indigo-100 transition-colors duration-300">
+              <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-white transition-colors duration-300">
+                {item.title}
+              </h3>
+              <p className="text-gray-500 text-xs md:text-sm leading-relaxed font-medium group-hover:text-blue-50 transition-colors duration-300">
                 {item.desc}
               </p>
               
-              <div className="mt-4 text-indigo-600 font-bold text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 group-hover:text-white transition-all duration-500">
+              <div className="mt-4 text-[#0000f0] font-bold text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 group-hover:text-white transition-all duration-500">
                 Book Session
               </div>
             </div>
@@ -94,7 +96,7 @@ export default function TalentGrid() {
           <div className="p-8 bg-gray-50 lg:col-span-2 flex items-center">
             <div className="flex items-start gap-4">
                <div className="mt-1">
-                 <Plus className="text-indigo-400" size={20} />
+                 <Plus className="text-[#0000f0]" size={20} />
                </div>
                <div>
                   <h3 className="text-lg font-bold text-gray-900 mb-2">Plus Thousands More Skills</h3>

@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import Banner from "./components/mainHomepages/banner";
+
 import Home from "./components/mainHomepages/Home";
 import Footer from "./components/Pages/Footer";
 import Navigation2 from "./components/Pages/Nav2";
@@ -12,6 +12,8 @@ import Jobhomepage from "../src/components/Homepagess/Jobseeker/Homepage";
 
 import Ausbuild from "../src/components/Homepagess/Ausbuilung/Homepage";
 
+import Studyaboard from "../src/components/Homepagess/Studyaboard/Homepage";
+
 
 function AppContent() {
   const location = useLocation();
@@ -21,7 +23,7 @@ function AppContent() {
   return (
     <>
     
-      {!hideLayout && <Banner />}
+    
       {!hideLayout && <Navigation2 />}
       
       <div className="min-h-screen bg-slate-50 selection:bg-blue-600 selection:text-white">
@@ -31,6 +33,7 @@ function AppContent() {
 
            <Route path="/Job-seeker" element={<Jobhomepage />} />
            <Route path="/aus-bildung" element={<Ausbuild />} />
+           <Route path="/study-abroad" element={<Studyaboard />} />
       
         </Routes>
       </div>
